@@ -7,25 +7,14 @@ import de.reptudn.Cards.*;
 import de.reptudn.Commands.GiveCardCommand;
 import de.reptudn.Events.PlayerJoinServer;
 import de.reptudn.Events.ServerList;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.Auth;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
 import net.minestom.server.event.server.ServerListPingEvent;
-import net.minestom.server.extras.mojangAuth.MojangCrypt;
 import net.minestom.server.instance.LightingChunk;
-import net.minestom.server.ping.Status;
-import net.minestom.server.utils.identity.NamedAndIdentified;
-import net.minestom.server.utils.mojang.MojangUtils;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class Main {
 
