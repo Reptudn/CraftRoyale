@@ -45,8 +45,8 @@ public class Main {
     private static void registerArenas() {
         ARENAS = new HashMap<>();
 
-        ARENAS.put("Goblin Stadium", new SingleArena("Goblin Stadium", 0, 300));
-        ARENAS.put("Goblin Stadium Duo", new DuoArena("Goblin Stadium Duo", 0, 300));
+        ARENAS.put("Goblin Stadium", new SingleArena("Goblin Stadium", "TestArena", 0, 300));
+        ARENAS.put("Goblin Stadium Duo", new DuoArena("Goblin Stadium Duo",0, 300));
     }
 
     private static void registerCards() {

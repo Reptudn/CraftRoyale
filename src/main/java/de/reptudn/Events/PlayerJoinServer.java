@@ -18,6 +18,7 @@ public class PlayerJoinServer {
     public static void PlayerSpawnHandler(PlayerSpawnEvent e) {
         final Player p = e.getPlayer();
         p.sendMessage(MessageFormat.getFormattedString("&6Welcome &e" + p.getUsername() + "&6 to the server!"));
+        p.sendMessage(MessageFormat.getFormattedString("Current Trophies: &a0"));
     }
 
 }

@@ -1,0 +1,28 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "model": "item/default_card",
+    "tints": [
+      {
+        "type": "minecraft:custom_model_data",
+        "index": 0,
+        "default": 0
+      }
+    ],
+    "property": "minecraft:custom_model_data",
+    "scale": 0.6,
+    "entries": [
+      {
+        "threshold": 0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "item/default_card"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/snowball"
+    }
+  }
+}
