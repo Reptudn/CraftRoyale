@@ -1,5 +1,8 @@
 package de.reptudn.Arenas;
 
+import net.minestom.server.MinecraftServer;
+import net.minestom.server.instance.Instance;
+
 public abstract class AArena {
 
     public String name;
@@ -21,4 +24,13 @@ public abstract class AArena {
         this.maxTrophies = maxTrophies;
     }
 
+    public Instance createInstance() {
+        Instance instance = MinecraftServer.getInstanceManager().createInstanceContainer();
+        // load the corresponding arena map here
+        return instance;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
