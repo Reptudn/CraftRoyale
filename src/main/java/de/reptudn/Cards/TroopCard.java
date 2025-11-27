@@ -18,4 +18,15 @@ public class TroopCard extends ACard {
         this.attackPeriod = attackPeriod;
     }
 
+    public int getHitpoints() {
+        return hitpoints;
+    }
+
+    public int getDamange() {
+        return damange;
+    }
+
+    public double getAttackPeriod() {
+        return attackPeriod;
+    }
 }

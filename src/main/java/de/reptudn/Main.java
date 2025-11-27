@@ -5,7 +5,6 @@ import de.reptudn.Arenas.DuoArena;
 import de.reptudn.Arenas.SingleArena;
 import de.reptudn.Cards.*;
 import de.reptudn.Commands.GiveCardCommand;
-import de.reptudn.Events.PlayerJoinServer;
 import de.reptudn.Events.ServerList;
 import net.minestom.server.Auth;
 import net.minestom.server.MinecraftServer;
@@ -14,7 +13,11 @@ import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
 import net.minestom.server.event.server.ServerListPingEvent;
 import net.minestom.server.instance.LightingChunk;
+
 import java.util.HashMap;
+
+import de.reptudn.Events.PlayerConnectionListener;
+import de.reptudn.Resourcepack.ResourcePackServer;
 
 public class Main {
 
@@ -34,11 +37,13 @@ public class Main {
         lobbyInstance.setChunkSupplier(LightingChunk::new);
 
         globalEventHandler.addListener(ServerListPingEvent.class, ServerList::Handler);
-        globalEventHandler.addListener(AsyncPlayerConfigurationEvent.class, PlayerJoinServer::ConfigurationEventHandler);
-        globalEventHandler.addListener(PlayerSpawnEvent.class, PlayerJoinServer::PlayerSpawnHandler);
+        globalEventHandler.addListener(AsyncPlayerConfigurationEvent.class, PlayerConnectionListener::ConfigurationEventHandler);
+        globalEventHandler.addListener(PlayerSpawnEvent.class, PlayerConnectionListener::PlayerSpawnHandler);
 
         registerCommands();
         System.out.println("Starting server...");
+
+        ResourcePackServer.start(25566);
         SERVER.start("0.0.0.0", 25565);
     }
 

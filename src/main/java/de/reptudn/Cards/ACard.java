@@ -2,11 +2,11 @@ package de.reptudn.Cards;
 
 public abstract class ACard {
 
-    public String name;
-    public CardRarity rarity;
-    public CardType type;
+    protected String name;
+    protected CardRarity rarity;
+    protected CardType type;
 
-    public int elixirCost;
+    protected int elixirCost;
 
     public ACard(String name, CardRarity rarity, CardType type, int elixirCost) {
         this.name = name;

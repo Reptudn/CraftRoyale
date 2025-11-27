@@ -10,4 +10,12 @@ public class BuildingCard extends ACard{
         this.hitpoints = hitpoints;
         this.lifetime = lifetime;
     }
+
+    public int getHitpoints() {
+        return hitpoints;
+    }
+
+    public double getLifetime() {
+        return lifetime;
+    }
 }

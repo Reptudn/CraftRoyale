@@ -12,4 +12,16 @@ public class SpellCard extends ACard{
         this.towerDamage = towerDamage;
         this.radius = radius;
     }
+
+    public int getNormalDamage() {
+        return normalDamage;
+    }
+
+    public int getTowerDamage() {
+        return towerDamage;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
 }
