@@ -1,10 +1,14 @@
 package de.reptudn.Cards;
 
+import net.minestom.server.tag.Tag;
+
 public abstract class ACard {
 
     protected String name;
     protected CardRarity rarity;
     protected CardType type;
+
+    public static final Tag<String> CARD_ID_TAG = Tag.String("card_id");
 
     protected int elixirCost;
 
@@ -25,5 +29,9 @@ public abstract class ACard {
 
     public int getElixirCost() {
         return elixirCost;
+    }
+
+    public CardType getCardType() {
+        return type;
     }
 }

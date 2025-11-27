@@ -1,7 +1,5 @@
 package de.reptudn.Entities.AI.Movement;
 
-import javax.swing.text.html.parser.Entity;
-
 import de.reptudn.Entities.AI.Behavior;
 import de.reptudn.Entities.AI.Utility.FindTarget;
 import net.minestom.server.entity.EntityCreature;
