@@ -1,5 +1,8 @@
 package de.reptudn.Cards;
 
+import java.util.List;
+
+import de.reptudn.Entities.AI.IBehavior;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.component.DataComponents;
@@ -46,4 +49,6 @@ public abstract class ACard {
         return ItemStack.builder(material).set(CARD_ID_TAG, this.name).set(DataComponents.CUSTOM_NAME, Component
                 .text(this.name).color(CardRarity.getColorByRarity(rarity)).decoration(TextDecoration.ITALIC, false));
     }
+
+    public abstract List<IBehavior> getDefaultTroopBehaviors();
 }

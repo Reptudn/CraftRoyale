@@ -2,6 +2,9 @@ package de.reptudn.Cards;
 
 import java.util.List;
 
+import de.reptudn.Entities.AI.IBehavior;
+import de.reptudn.Entities.AI.CollisionBehavior;
+import de.reptudn.Entities.AI.Movement.MoveToClosestPlayerBehavior;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.component.DataComponents;
@@ -13,12 +16,30 @@ public class TroopCard extends ACard {
     private final int hitpoints;
     private final int damange;
     private final double attackPeriod;
+    private final double movementSpeed;
 
-    public TroopCard(String name, CardRarity rarity, int exlicirCost, int hitpoints, int damage, double attackPeriod) {
+    private final double detectionRange;
+    private final double attackRange;
+
+    // TODO: add troop type and behavior type later
+    // private final BehaviorType behaviorType = BehaviorType.ALL;
+    // private final TroupType troopType = TroupType.GROUND;
+
+    public TroopCard(String name, CardRarity rarity, int exlicirCost, int hitpoints, int damage, double attackPeriod,
+            double movementSpeed, double detectionRange, double attackRange) {
         super(name, rarity, CardType.TROOP, exlicirCost);
         this.hitpoints = hitpoints;
         this.damange = damage;
         this.attackPeriod = attackPeriod;
+        this.movementSpeed = movementSpeed;
+        this.detectionRange = detectionRange;
+        this.attackRange = attackRange;
+    }
+
+    @Override
+    public List<IBehavior> getDefaultTroopBehaviors() {
+        return List.of(new MoveToClosestPlayerBehavior(movementSpeed, detectionRange, attackRange),
+                new CollisionBehavior());
     }
 
     public int getHitpoints() {

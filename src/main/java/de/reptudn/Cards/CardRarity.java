@@ -11,7 +11,7 @@ public enum CardRarity {
 
     public static TextColor getColorByRarity(CardRarity rarity) {
         return switch (rarity) {
-            case COMMON -> TextColor.fromCSSHexString("#585858ff"); // White
+            case COMMON -> TextColor.fromCSSHexString("#484242ff"); // White
             case RARE -> TextColor.fromCSSHexString("#0000FF"); // Blue
             case EPIC -> TextColor.fromCSSHexString("#800080"); // Purple
             case LEGENDARY -> TextColor.fromCSSHexString("#FFA500"); // Orange

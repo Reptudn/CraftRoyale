@@ -2,6 +2,7 @@ package de.reptudn.Cards;
 
 import java.util.List;
 
+import de.reptudn.Entities.AI.IBehavior;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.component.DataComponents;
@@ -10,8 +11,8 @@ import net.minestom.server.item.Material;
 
 public class BuildingCard extends ACard {
 
-    private int hitpoints;
-    private double lifetime;
+    private final int hitpoints;
+    private final double lifetime;
 
     public BuildingCard(String name, CardRarity rarity, int elixirCost, int hitpoints, double lifetime) {
         super(name, rarity, CardType.BUILDING, elixirCost);
@@ -38,5 +39,10 @@ public class BuildingCard extends ACard {
                         Component.empty(),
                         Component.text("Right-click to place!").color(NamedTextColor.GRAY)))
                 .build();
+    }
+
+    @Override
+    public List<IBehavior> getDefaultTroopBehaviors() {
+        throw new UnsupportedOperationException("BuildingCard does not have troop behaviors.");
     }
 }

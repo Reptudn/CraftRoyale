@@ -3,10 +3,8 @@ package de.reptudn.Entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.html.parser.Entity;
-
 import de.reptudn.Cards.TroopCard;
-import de.reptudn.Entities.AI.Behavior;
+import de.reptudn.Entities.AI.IBehavior;
 import de.reptudn.Game.Team;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -22,10 +20,13 @@ import net.minestom.server.instance.Instance;
 public class TroopCreature extends EntityCreature {
 
 	private final TroopCard card;
-	private final List<Behavior> behaviors = new ArrayList<>();
+	private final List<IBehavior> behaviors = new ArrayList<>();
 
 	private final int attackDamage;
 	private final Team team;
+
+	private float customCurrentHealth;
+	private final float customMaxHealth;
 
 	public TroopCreature(TroopCard card, Instance instance, Team team, Pos spawnPos) {
 		super(EntityType.ZOMBIE);
@@ -34,6 +35,8 @@ public class TroopCreature extends EntityCreature {
 		this.team = team;
 
 		this.attackDamage = card.getDamange();
+
+		behaviors.addAll(card.getDefaultTroopBehaviors());
 
 		addAIGroup(new EntityAIGroup() {
 			@Override
@@ -45,13 +48,48 @@ public class TroopCreature extends EntityCreature {
 		editEntityMeta(ZombieMeta.class, meta -> {
 			meta.setCustomNameVisible(true);
 			meta.setHasGlowingEffect(true);
-			meta.setHealth(card.getHitpoints());
 		});
+
+		// this.getAttribute(Attribute.MAX_HEALTH).setBaseValue(card.getHitpoints());
+		// this.setHealth(card.getHitpoints());
+		this.customMaxHealth = card.getHitpoints();
+		this.customCurrentHealth = (int) customMaxHealth;
 
 		updateHealthDisplay();
 
-		this.setInstance(instance);
-		this.teleport(spawnPos);
+		this.setInstance(instance, spawnPos);
+	}
+
+	private void runBehaviors(long time) {
+		for (IBehavior behavior : behaviors) {
+			behavior.tick(this, time);
+		}
+	}
+
+	@Override
+	public void setHealth(float health) {
+
+		if (card == null) {
+			super.setHealth(health);
+			return;
+		}
+
+		this.customCurrentHealth = Math.max(0, Math.min(customMaxHealth, health));
+
+		// Update visual health bar (scaled to Minecraft's range)
+		float visualHealth = (customCurrentHealth / customMaxHealth) * 40.0f;
+		super.setHealth(visualHealth);
+
+		editEntityMeta(ZombieMeta.class, meta -> {
+			meta.setHealth(visualHealth);
+		});
+
+		updateHealthDisplay();
+	}
+
+	@Override
+	public float getHealth() {
+		return customCurrentHealth;
 	}
 
 	private void updateHealthDisplay() {
@@ -64,7 +102,7 @@ public class TroopCreature extends EntityCreature {
 	}
 
 	private Component createHealthBar() {
-		int maxHealth = card.getHitpoints();
+		int maxHealth = (int) this.customMaxHealth;
 		int barLength = 20; // Length of the health bar
 		int filledBars = (int) ((double) this.getHealth() / maxHealth * barLength);
 
@@ -73,7 +111,7 @@ public class TroopCreature extends EntityCreature {
 		// Add filled portion (green/yellow/red based on health percentage)
 		TextColor healthColor = getHealthColor();
 		for (int i = 0; i < filledBars; i++) {
-			healthBar.append("█");
+			healthBar.append("|");
 		}
 
 		Component filledPortion = Component.text(healthBar.toString()).color(healthColor);
@@ -81,7 +119,7 @@ public class TroopCreature extends EntityCreature {
 		// Add empty portion (gray)
 		StringBuilder emptyBar = new StringBuilder();
 		for (int i = filledBars; i < barLength; i++) {
-			emptyBar.append("█");
+			emptyBar.append(" ");
 		}
 		Component emptyPortion = Component.text(emptyBar.toString()).color(NamedTextColor.DARK_GRAY);
 
@@ -92,16 +130,14 @@ public class TroopCreature extends EntityCreature {
 		return filledPortion.append(emptyPortion).append(healthText);
 	}
 
-	private void runBehaviors(long time) {
-		for (Behavior behavior : behaviors) {
-			behavior.tick(this, time);
-		}
-	}
-
 	public void damage(float damage) {
 		float currentHealth = this.getHealth();
 		currentHealth -= damage;
 		this.setHealth(currentHealth);
+
+		this.updateHealthDisplay();
+
+		// TODO: display damage effect here
 
 		if (currentHealth <= 0) {
 			// handle more death stuff later here like death particles/sounds etc

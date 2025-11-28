@@ -1,14 +1,11 @@
-package de.reptudn.Commands;
+package de.reptudn.Commands.Cards;
 
 import de.reptudn.Cards.CardManager;
-import de.reptudn.Cards.CardRarity;
 import de.reptudn.Utils.MessageFormat;
-import net.kyori.adventure.text.Component;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.entity.Player;
-import net.minestom.server.item.ItemStack;
-import net.minestom.server.item.Material;
 
 public class GiveCardCommand extends Command {
     public GiveCardCommand() {
@@ -26,7 +23,19 @@ public class GiveCardCommand extends Command {
             sender.sendMessage(MessageFormat.getFormattedString("Usage: /givecard <cardName>"));
         });
 
-        var cardNameArg = ArgumentType.String("cardName");
+        var cardNameArg = ArgumentType.StringArray("cardName");
+        cardNameArg.setSuggestionCallback((sender, context, suggestion) -> {
+            String currentInput = context.getInput().toLowerCase();
+
+            // Get all card names and filter based on current input
+            CardManager.getCards().keySet().forEach(cardName -> {
+                // Only suggest cards that start with the current input
+                if (cardName.toLowerCase().startsWith(currentInput) || currentInput.isEmpty()) {
+                    suggestion.addEntry(new SuggestionEntry(cardName));
+                }
+            });
+        });
+
         addSyntax((sender, commandContext) -> {
 
             if (!(sender instanceof Player player)) {
@@ -37,7 +46,8 @@ public class GiveCardCommand extends Command {
                 return;
             }
 
-            final String cardName = commandContext.get(cardNameArg);
+            final String[] cardNameArray = commandContext.get(cardNameArg);
+            final String cardName = String.join(" ", cardNameArray);
 
             var card = CardManager.getCardByName(cardName);
 

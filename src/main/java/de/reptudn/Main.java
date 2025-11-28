@@ -1,8 +1,5 @@
 package de.reptudn;
 
-import javax.smartcardio.Card;
-
-import de.reptudn.Commands.GiveCardCommand;
 import de.reptudn.Events.ServerList;
 import net.minestom.server.Auth;
 import net.minestom.server.MinecraftServer;
@@ -13,6 +10,8 @@ import net.minestom.server.event.player.PlayerSpawnEvent;
 import net.minestom.server.event.server.ServerListPingEvent;
 import net.minestom.server.instance.LightingChunk;
 import net.minestom.server.instance.block.Block;
+import de.reptudn.Commands.Cards.GiveCardCommand;
+import de.reptudn.Commands.Cards.ListAllCardsCommands;
 import de.reptudn.Events.PlayerConnectionListener;
 import de.reptudn.Game.CardPlacementHandler;
 import de.reptudn.Instances.InstanceManager;
@@ -54,6 +53,6 @@ public class Main {
     }
 
     private static void registerCommands() {
-        MinecraftServer.getCommandManager().register(new GiveCardCommand());
+        MinecraftServer.getCommandManager().register(new GiveCardCommand(), new ListAllCardsCommands());
     }
 }

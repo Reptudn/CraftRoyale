@@ -40,6 +40,6 @@ public class CardPlacementHandler {
 	}
 
 	private static Pos getPlacementPosition(Player p) {
-		return p.getPosition().add(0, 0, 5); // Example: 5 blocks in front of the player
+		return p.getPosition();
 	}
 }

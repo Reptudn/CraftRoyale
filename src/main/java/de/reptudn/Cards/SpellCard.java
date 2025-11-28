@@ -2,6 +2,7 @@ package de.reptudn.Cards;
 
 import java.util.List;
 
+import de.reptudn.Entities.AI.IBehavior;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.component.DataComponents;
@@ -45,5 +46,10 @@ public class SpellCard extends ACard {
                         Component.empty(),
                         Component.text("Right-click to cast!").color(NamedTextColor.GRAY)))
                 .build();
+    }
+
+    @Override
+    public List<IBehavior> getDefaultTroopBehaviors() {
+        throw new UnsupportedOperationException("SpellCard does not have troop behaviors.");
     }
 }
