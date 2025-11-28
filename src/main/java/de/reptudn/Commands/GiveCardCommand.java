@@ -1,6 +1,6 @@
 package de.reptudn.Commands;
 
-import de.reptudn.Main;
+import de.reptudn.Cards.CardManager;
 import de.reptudn.Utils.MessageFormat;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.builder.Command;
@@ -15,8 +15,10 @@ public class GiveCardCommand extends Command {
 
         setDefaultExecutor((sender, commandContext) -> {
 
-            if (!(sender instanceof Player player)){
-                sender.sendMessage(MessageFormat.getFormattedString("This command can only be executed by a player."));
+            if (!(sender instanceof Player)) {
+                if (sender != null)
+                    sender.sendMessage(
+                            MessageFormat.getFormattedString("This command can only be executed by a player."));
                 return;
             }
 
@@ -26,21 +28,25 @@ public class GiveCardCommand extends Command {
         var cardNameArg = ArgumentType.String("cardName");
         addSyntax((sender, commandContext) -> {
 
-            if (!(sender instanceof Player player)){
-                sender.sendMessage(MessageFormat.getFormattedString("This command can only be executed by a player."));
+            if (!(sender instanceof Player player)) {
+                if (sender != null) {
+                    sender.sendMessage(
+                            MessageFormat.getFormattedString("This command can only be executed by a player."));
+                }
                 return;
             }
 
             final String cardName = commandContext.get(cardNameArg);
 
-            var card = Main.CARDS.get(cardName.replace(" ", "-"));
+            var card = CardManager.getCardByName(cardName);
 
             if (card == null) {
                 player.sendMessage(MessageFormat.getFormattedString("Card not found: " + cardName));
                 return;
             }
 
-            player.getInventory().addItemStack(ItemStack.of(Material.PAPER).withCustomName(Component.text("§r§b" + card.getName())));
+            player.getInventory()
+                    .addItemStack(ItemStack.of(Material.PAPER).withCustomName(Component.text("§r§b" + card.getName())));
 
             player.sendMessage(MessageFormat.getFormattedString("Added Card Name: " + cardName));
         }, cardNameArg);

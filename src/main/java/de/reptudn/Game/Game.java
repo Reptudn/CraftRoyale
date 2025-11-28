@@ -45,7 +45,7 @@ public class Game {
 		this.teamTowers.put(Team.BLUE, new HashSet<>());
 
 		int i = 0;
-		for(Player player : players) {
+		for (Player player : players) {
 			Team team = (i % 2 == 0) ? Team.RED : Team.BLUE;
 			playerTeams.put(player.getUuid(), team);
 			i++;
@@ -57,7 +57,7 @@ public class Game {
 
 	public void addTroopToTeam(Team team, EntityCreature troop) {
 		Set<EntityCreature> troops = teamTroops.get(team);
-		if(troops != null) {
+		if (troops != null) {
 			troops.add(troop);
 		}
 	}

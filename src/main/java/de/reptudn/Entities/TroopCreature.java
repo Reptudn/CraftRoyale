@@ -19,7 +19,7 @@ import net.minestom.server.entity.ai.EntityAIGroup;
 import net.minestom.server.entity.metadata.monster.zombie.ZombieMeta;
 import net.minestom.server.instance.Instance;
 
-public class TroopCreature extends EntityCreature{
+public class TroopCreature extends EntityCreature {
 
 	private final TroopCard card;
 	private final List<Behavior> behaviors = new ArrayList<>();
@@ -56,10 +56,10 @@ public class TroopCreature extends EntityCreature{
 
 	private void updateHealthDisplay() {
 		Component nameComponent = Component.text(card.getName())
-			.color(Team.getTeamColor(team))
-			.append(Component.newline())
-			.append(createHealthBar());
-		
+				.color(Team.getTeamColor(team))
+				.append(Component.newline())
+				.append(createHealthBar());
+
 		this.set(DataComponents.CUSTOM_NAME, nameComponent);
 	}
 
@@ -67,33 +67,33 @@ public class TroopCreature extends EntityCreature{
 		int maxHealth = card.getHitpoints();
 		int barLength = 20; // Length of the health bar
 		int filledBars = (int) ((double) this.getHealth() / maxHealth * barLength);
-		
+
 		StringBuilder healthBar = new StringBuilder();
-		
+
 		// Add filled portion (green/yellow/red based on health percentage)
 		TextColor healthColor = getHealthColor();
 		for (int i = 0; i < filledBars; i++) {
 			healthBar.append("█");
 		}
-		
+
 		Component filledPortion = Component.text(healthBar.toString()).color(healthColor);
-		
+
 		// Add empty portion (gray)
 		StringBuilder emptyBar = new StringBuilder();
 		for (int i = filledBars; i < barLength; i++) {
 			emptyBar.append("█");
 		}
 		Component emptyPortion = Component.text(emptyBar.toString()).color(NamedTextColor.DARK_GRAY);
-		
+
 		// Add health numbers
 		Component healthText = Component.text(" " + this.getHealth() + "/" + maxHealth)
-			.color(NamedTextColor.WHITE);
-		
+				.color(NamedTextColor.WHITE);
+
 		return filledPortion.append(emptyPortion).append(healthText);
 	}
- 
+
 	private void runBehaviors(long time) {
-		for(Behavior behavior : behaviors) {
+		for (Behavior behavior : behaviors) {
 			behavior.tick(this, time);
 		}
 	}
@@ -103,7 +103,7 @@ public class TroopCreature extends EntityCreature{
 		currentHealth -= damage;
 		this.setHealth(currentHealth);
 
-		if(currentHealth <= 0) {
+		if (currentHealth <= 0) {
 			// handle more death stuff later here like death particles/sounds etc
 			this.remove();
 		}
@@ -111,8 +111,10 @@ public class TroopCreature extends EntityCreature{
 
 	private TextColor getHealthColor() {
 		double healthPercent = (double) this.getHealth() / card.getHitpoints();
-		if (healthPercent > 0.6) return NamedTextColor.GREEN;
-		if (healthPercent > 0.3) return NamedTextColor.YELLOW;
+		if (healthPercent > 0.6)
+			return NamedTextColor.GREEN;
+		if (healthPercent > 0.3)
+			return NamedTextColor.YELLOW;
 		return NamedTextColor.RED;
 	}
 

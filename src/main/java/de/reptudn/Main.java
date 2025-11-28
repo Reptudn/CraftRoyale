@@ -26,7 +26,8 @@ public class Main {
         lobbyInstance.setChunkSupplier(LightingChunk::new);
 
         globalEventHandler.addListener(ServerListPingEvent.class, ServerList::Handler);
-        globalEventHandler.addListener(AsyncPlayerConfigurationEvent.class, PlayerConnectionListener::ConfigurationEventHandler);
+        globalEventHandler.addListener(AsyncPlayerConfigurationEvent.class,
+                PlayerConnectionListener::ConfigurationEventHandler);
         globalEventHandler.addListener(PlayerSpawnEvent.class, PlayerConnectionListener::PlayerSpawnHandler);
 
         registerCommands();

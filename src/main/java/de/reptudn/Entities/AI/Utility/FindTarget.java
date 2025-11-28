@@ -1,9 +1,6 @@
 package de.reptudn.Entities.AI.Utility;
 
-import javax.swing.text.html.parser.Entity;
-
 import de.reptudn.Entities.ATower;
-import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityCreature;
 
 public class FindTarget {
