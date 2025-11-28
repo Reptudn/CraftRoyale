@@ -10,6 +10,7 @@ public class ResourcePackHandler implements HttpHandler {
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 		String path = exchange.getRequestURI().getPath().substring("/resourcepack".length());
+        System.out.println("ResourcePack request for path: " + path);
 
 		if (path.isEmpty() || path.equals("/")) {
 			path = "/pack.mcmeta";

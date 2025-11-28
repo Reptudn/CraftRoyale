@@ -16,6 +16,7 @@ import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.ai.EntityAIGroup;
 import net.minestom.server.entity.metadata.monster.zombie.ZombieMeta;
 import net.minestom.server.instance.Instance;
+import net.minestom.server.network.packet.server.play.EntityAnimationPacket;
 
 public class TroopCreature extends EntityCreature {
 
@@ -134,6 +135,10 @@ public class TroopCreature extends EntityCreature {
 		float currentHealth = this.getHealth();
 		currentHealth -= damage;
 		this.setHealth(currentHealth);
+
+        this.getViewers().forEach(player -> {
+            player.sendPacket(new EntityAnimationPacket(this.getEntityId(), EntityAnimationPacket.Animation.TAKE_DAMAGE));
+        });
 
 		this.updateHealthDisplay();
 

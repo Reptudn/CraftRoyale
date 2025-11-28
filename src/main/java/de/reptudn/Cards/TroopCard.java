@@ -2,9 +2,12 @@ package de.reptudn.Cards;
 
 import java.util.List;
 
+import de.reptudn.Entities.AI.Attack.AttackEntityCreature;
+import de.reptudn.Entities.AI.Attack.AttackPlayer;
 import de.reptudn.Entities.AI.IBehavior;
 import de.reptudn.Entities.AI.CollisionBehavior;
 import de.reptudn.Entities.AI.Movement.MoveToClosestPlayerBehavior;
+import de.reptudn.Entities.AI.Movement.MoveToClosestTroop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.component.DataComponents;
@@ -38,8 +41,8 @@ public class TroopCard extends ACard {
 
     @Override
     public List<IBehavior> getDefaultTroopBehaviors() {
-        return List.of(new MoveToClosestPlayerBehavior(movementSpeed, maxDetectionRange, attackRange),
-                new CollisionBehavior());
+        return List.of(new MoveToClosestTroop(movementSpeed, maxDetectionRange, attackRange),
+                new CollisionBehavior(), new AttackEntityCreature(this.attackRange, (float) this.damange, (long) (this.attackPeriod * 1000)));
     }
 
     public int getHitpoints() {

@@ -94,9 +94,7 @@ public class Game {
 		return players;
 	}
 
-	private Scheduler gameScheduler;
-
-	public void startGame() {
+    public void startGame() {
 		this.state = GameState.IN_PROGRESS;
 		this.startTime = Instant.now();
 
@@ -107,24 +105,33 @@ public class Game {
 					new Notification(Component.text("Game started!"), FrameType.GOAL, Material.SADDLE));
 		});
 
-		// add game tick task
-		gameScheduler = MinecraftServer.getSchedulerManager();
+        Scheduler gameScheduler = MinecraftServer.getSchedulerManager();
 		gameScheduler.submitTask(() -> {
-			tickGame();
+            if (this.state != GameState.IN_PROGRESS) {
+                return TaskSchedule.stop();
+            }
+			tickGame(Duration.between(this.startTime, Instant.now()).toMinutes());
 			return TaskSchedule.millis(1000 / TICKS_PER_SECOND);
 		});
-		// add task to automatically change the elixir multiplier after a certain time
 	}
 
-	private void tickGame() {
+	private void tickGame(long timeElapsedInMinutes) {
 		// game stuff in here
 
 		// give players elixir with multiplier (change multiplier on specific times)
 		// check win condition
 		// end game when its over
 
+        if (timeElapsedInMinutes >= 6) {
+            endGame();
+            return;
+        } else if (timeElapsedInMinutes >= 3) {
+            ELIXIR_MULTIPLIER = 3f;
+        } else if (timeElapsedInMinutes >= 2) {
+            ELIXIR_MULTIPLIER = 1.5f;
+        }
+
 		this.players.forEach(player -> {
-			// give players elixir
 			player.setFoodSaturation(
 					Math.max(player.getFoodSaturation() + (PER_TICK_INCOME * ELIXIR_MULTIPLIER), MAX_ELIXIR));
 		});
@@ -133,8 +140,6 @@ public class Game {
 	public void endGame() {
 		this.state = GameState.ENDED;
 		this.endTime = Instant.now();
-		// this.gameScheduler.cancel();
-
 		// save game into db or something
 		// put players back into the normal instance (lobby)
 	}

@@ -30,7 +30,7 @@ public class Main {
         // SERVER = MinecraftServer.init(new Auth.Online());
         // else
         // MinecraftServer.init();
-        MinecraftServer SERVER = MinecraftServer.init();
+        MinecraftServer SERVER = MinecraftServer.init(new Auth.Online());
 
         GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
 

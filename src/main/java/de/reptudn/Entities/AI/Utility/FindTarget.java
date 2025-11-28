@@ -24,25 +24,48 @@ public class FindTarget {
 	}
 
 	public static Player closestPlayer(EntityCreature origin) {
-		Player closest = origin.getInstance().getPlayers().stream()
-				.min((p1, p2) -> {
-					double dist1 = p1.getPosition().distance(origin.getPosition());
-					double dist2 = p2.getPosition().distance(origin.getPosition());
-					return Double.compare(dist1, dist2);
-				})
-				.orElse(null);
-		return closest;
+        return origin.getInstance().getPlayers().stream()
+                .min((p1, p2) -> {
+                    double dist1 = p1.getPosition().distance(origin.getPosition());
+                    double dist2 = p2.getPosition().distance(origin.getPosition());
+                    return Double.compare(dist1, dist2);
+                })
+                .orElse(null);
 	}
 
 	public static Player closestPlayerWithinDistance(EntityCreature origin, double maxDistance) {
-		Player closest = origin.getInstance().getPlayers().stream()
-				.filter(p -> p.getPosition().distance(origin.getPosition()) <= maxDistance)
-				.min((p1, p2) -> {
-					double dist1 = p1.getPosition().distance(origin.getPosition());
-					double dist2 = p2.getPosition().distance(origin.getPosition());
-					return Double.compare(dist1, dist2);
-				})
-				.orElse(null);
-		return closest;
+        return origin.getInstance().getPlayers().stream()
+                .filter(p -> p.getPosition().distance(origin.getPosition()) <= maxDistance)
+                .min((p1, p2) -> {
+                    double dist1 = p1.getPosition().distance(origin.getPosition());
+                    double dist2 = p2.getPosition().distance(origin.getPosition());
+                    return Double.compare(dist1, dist2);
+                })
+                .orElse(null);
 	}
+
+    public static EntityCreature closestEntity(EntityCreature origin) {
+        return (EntityCreature) origin.getInstance().getEntities().stream()
+                .filter(p -> p != origin)
+                .filter(p -> p instanceof EntityCreature)
+                .min((p1, p2) -> {
+                    double dist1 = p1.getPosition().distance(origin.getPosition());
+                    double dist2 = p2.getPosition().distance(origin.getPosition());
+                    return Double.compare(dist1, dist2);
+                })
+                .orElse(null);
+    }
+
+    public static EntityCreature closestEntityWithinDistance(EntityCreature origin, double maxDistance) {
+        return (EntityCreature) origin.getInstance().getEntities().stream()
+                .filter(p -> p.getPosition().distance(origin.getPosition()) <= maxDistance)
+                .filter(p -> p != origin)
+                .filter(p -> p instanceof EntityCreature)
+                .min((p1, p2) -> {
+                    double dist1 = p1.getPosition().distance(origin.getPosition());
+                    double dist2 = p2.getPosition().distance(origin.getPosition());
+                    return Double.compare(dist1, dist2);
+                })
+                .orElse(null);
+    }
 }

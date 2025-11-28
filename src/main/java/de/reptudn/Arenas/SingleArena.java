@@ -7,6 +7,11 @@ public class SingleArena extends AArena{
     public Player player1;
     public Player player2;
 
+    public SingleArena(String name, int minTrophies, int maxTrophies) {
+        super(name, minTrophies, maxTrophies);
+    }
+
+    /*
     public SingleArena(String name, String worldPath, int minTrophies, int maxTrophies, double elixirPerSecond) {
         super(name, worldPath, minTrophies, maxTrophies, elixirPerSecond);
     }
@@ -14,4 +19,6 @@ public class SingleArena extends AArena{
     public SingleArena(String name, String worldPath, int minTrophies, int maxTrophies) {
         super(name, worldPath, minTrophies, maxTrophies);
     }
+    */
+
 }

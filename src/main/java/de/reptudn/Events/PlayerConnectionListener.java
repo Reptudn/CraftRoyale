@@ -33,6 +33,7 @@ public class PlayerConnectionListener {
     public static void PlayerSpawnHandler(PlayerSpawnEvent e) {
         final Player p = e.getPlayer();
         p.sendMessage(MessageFormat.getFormattedString("&6Welcome &e" + p.getUsername() + "&6 to the server!"));
+        p.setHealth(10000f);
     }
 
 }
