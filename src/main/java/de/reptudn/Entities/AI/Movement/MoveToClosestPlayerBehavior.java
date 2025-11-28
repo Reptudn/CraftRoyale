@@ -10,19 +10,19 @@ public class MoveToClosestPlayerBehavior implements IBehavior {
     private final double movementSpeed;
 
     private Player target = null;
-    private final double detectionRange;
+    private final double maxDetectionRange;
     private final double attackRange;
 
-    public MoveToClosestPlayerBehavior(double movementSpeed, double detectionRange, double attackRange) {
+    public MoveToClosestPlayerBehavior(double movementSpeed, double maxDetectionRange, double attackRange) {
         this.movementSpeed = movementSpeed;
-        this.detectionRange = detectionRange;
+        this.maxDetectionRange = maxDetectionRange;
         this.attackRange = attackRange;
     }
 
     @Override
     public void tick(EntityCreature entity, long time) {
         if (target == null || target.isRemoved() || target.getHealth() <= 0) {
-            target = FindTarget.closestPlayerWithinDistance(entity, 20);
+            target = FindTarget.closestPlayerWithinDistance(entity, maxDetectionRange);
         }
 
         if (target == null) {
@@ -37,7 +37,7 @@ public class MoveToClosestPlayerBehavior implements IBehavior {
         double dz = targetPos.z() - currentPos.z();
         double distance = Math.sqrt(dx * dx + dz * dz);
 
-        if (distance > this.detectionRange) {
+        if (distance > this.maxDetectionRange) {
             target = null; // Target is out of range
             return;
         }

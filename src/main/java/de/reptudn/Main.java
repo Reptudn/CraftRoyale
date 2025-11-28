@@ -20,10 +20,18 @@ import net.minestom.server.event.player.PlayerUseItemEvent;
 
 public class Main {
 
+    // private static final boolean ONLINEMODE = false;
+
     public static void main(String[] args) {
         System.out.println("Initializing server...");
 
-        MinecraftServer SERVER = MinecraftServer.init(new Auth.Online());
+        // MinecraftServer SERVER;
+        // if (ONLINEMODE)
+        // SERVER = MinecraftServer.init(new Auth.Online());
+        // else
+        // MinecraftServer.init();
+        MinecraftServer SERVER = MinecraftServer.init();
+
         GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
 
         InstanceManager.createInstance("lobby").setGenerator(unit -> {

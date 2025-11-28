@@ -18,7 +18,7 @@ public class TroopCard extends ACard {
     private final double attackPeriod;
     private final double movementSpeed;
 
-    private final double detectionRange;
+    private final double maxDetectionRange;
     private final double attackRange;
 
     // TODO: add troop type and behavior type later
@@ -26,19 +26,19 @@ public class TroopCard extends ACard {
     // private final TroupType troopType = TroupType.GROUND;
 
     public TroopCard(String name, CardRarity rarity, int exlicirCost, int hitpoints, int damage, double attackPeriod,
-            double movementSpeed, double detectionRange, double attackRange) {
+            double movementSpeed, double maxDetectionRange, double attackRange) {
         super(name, rarity, CardType.TROOP, exlicirCost);
         this.hitpoints = hitpoints;
         this.damange = damage;
         this.attackPeriod = attackPeriod;
         this.movementSpeed = movementSpeed;
-        this.detectionRange = detectionRange;
+        this.maxDetectionRange = maxDetectionRange;
         this.attackRange = attackRange;
     }
 
     @Override
     public List<IBehavior> getDefaultTroopBehaviors() {
-        return List.of(new MoveToClosestPlayerBehavior(movementSpeed, detectionRange, attackRange),
+        return List.of(new MoveToClosestPlayerBehavior(movementSpeed, maxDetectionRange, attackRange),
                 new CollisionBehavior());
     }
 

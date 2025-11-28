@@ -47,7 +47,8 @@ public abstract class ACard {
 
     protected ItemStack.Builder createBaseItemStack(Material material) {
         return ItemStack.builder(material).set(CARD_ID_TAG, this.name).set(DataComponents.CUSTOM_NAME, Component
-                .text(this.name).color(CardRarity.getColorByRarity(rarity)).decoration(TextDecoration.ITALIC, false));
+                .text(this.name + " (" + this.elixirCost + ")").color(CardRarity.getColorByRarity(rarity))
+                .decoration(TextDecoration.ITALIC, false));
     }
 
     public abstract List<IBehavior> getDefaultTroopBehaviors();
