@@ -1,6 +1,7 @@
 package de.reptudn.Commands;
 
 import de.reptudn.Cards.CardManager;
+import de.reptudn.Cards.CardRarity;
 import de.reptudn.Utils.MessageFormat;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.builder.Command;
@@ -46,7 +47,7 @@ public class GiveCardCommand extends Command {
             }
 
             player.getInventory()
-                    .addItemStack(ItemStack.of(Material.PAPER).withCustomName(Component.text("§r§b" + card.getName())));
+                    .addItemStack(card.createItemStack());
 
             player.sendMessage(MessageFormat.getFormattedString("Added Card Name: " + cardName));
         }, cardNameArg);

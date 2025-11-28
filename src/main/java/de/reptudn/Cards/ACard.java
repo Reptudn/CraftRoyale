@@ -1,5 +1,10 @@
 package de.reptudn.Cards;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.minestom.server.component.DataComponents;
+import net.minestom.server.item.ItemStack;
+import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
 
 public abstract class ACard {
@@ -33,5 +38,12 @@ public abstract class ACard {
 
     public CardType getCardType() {
         return type;
+    }
+
+    public abstract ItemStack createItemStack();
+
+    protected ItemStack.Builder createBaseItemStack(Material material) {
+        return ItemStack.builder(material).set(CARD_ID_TAG, this.name).set(DataComponents.CUSTOM_NAME, Component
+                .text(this.name).color(CardRarity.getColorByRarity(rarity)).decoration(TextDecoration.ITALIC, false));
     }
 }

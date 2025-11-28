@@ -1,5 +1,13 @@
 package de.reptudn.Cards;
 
+import java.util.List;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.component.DataComponents;
+import net.minestom.server.item.ItemStack;
+import net.minestom.server.item.Material;
+
 public class TroopCard extends ACard {
 
     private final int hitpoints;
@@ -23,5 +31,18 @@ public class TroopCard extends ACard {
 
     public double getAttackPeriod() {
         return attackPeriod;
+    }
+
+    @Override
+    public ItemStack createItemStack() {
+        return createBaseItemStack(Material.PAPER) // Use paper or a custom material
+                .set(DataComponents.LORE, List.of(
+                        Component.text("Type: Troop").color(NamedTextColor.GOLD),
+                        Component.text("HP: " + hitpoints).color(NamedTextColor.GREEN),
+                        Component.text("Attack Speed: " + attackPeriod + "s").color(NamedTextColor.YELLOW),
+                        Component.text("Elixir Cost: " + getElixirCost()).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.empty(),
+                        Component.text("Right-click to place!").color(NamedTextColor.GRAY)))
+                .build();
     }
 }

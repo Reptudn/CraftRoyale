@@ -12,13 +12,15 @@ import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.item.ItemStack;
 
 public class CardPlacementHandler {
-	public static void handleCardPlacement(PlayerUseItemEvent event, Game game) {
+	public static void handleCardPlacement(PlayerUseItemEvent event) {
 		Player p = event.getPlayer();
+		p.sendMessage("UseItemEvent");
 		ItemStack item = event.getItemStack();
 
 		ACard card = CardManager.getCardByItem(item);
 		if (card == null
 				|| !(card instanceof TroopCard || !(card instanceof SpellCard) || !(card instanceof BuildingCard))) {
+			System.out.println("Invalid card placement attempt by player " + p.getUsername());
 			return; // Not a valid troop card
 		}
 

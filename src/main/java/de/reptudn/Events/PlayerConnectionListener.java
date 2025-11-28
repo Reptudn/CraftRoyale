@@ -1,5 +1,6 @@
 package de.reptudn.Events;
 
+import de.reptudn.Instances.InstanceManager;
 import de.reptudn.Resourcepack.ResourcePackServer;
 import de.reptudn.Utils.MessageFormat;
 import net.kyori.adventure.resource.ResourcePackInfo;
@@ -13,12 +14,19 @@ import net.minestom.server.event.player.PlayerSpawnEvent;
 
 public class PlayerConnectionListener {
 
+    private static final boolean REQUIRE_RESOURCE_PACK = false; // TODO: make resourcepacks work in the future
+
     public static void ConfigurationEventHandler(AsyncPlayerConfigurationEvent e) {
         final Player p = e.getPlayer();
-        e.setSpawningInstance(MinecraftServer.getInstanceManager().getInstances().iterator().next());
-        p.setRespawnPoint(new Pos(0, 4, 0));
+        e.setSpawningInstance(InstanceManager.getInstanceById("lobby"));
+        p.setRespawnPoint(new Pos(0, 42, 0));
 
-        ResourcePackRequest resourcePackRequest = ResourcePackRequest.resourcePackRequest().packs(ResourcePackInfo.resourcePackInfo(ResourcePackServer.getResourcePackUUID(), ResourcePackServer.getResourcePackURI(), ResourcePackServer.getResourcePackHash())).prompt(Component.text("This Resourcepack is required to play!")).required(true).build();
+        ResourcePackRequest resourcePackRequest = ResourcePackRequest.resourcePackRequest()
+                .packs(ResourcePackInfo.resourcePackInfo(ResourcePackServer.getResourcePackUUID(),
+                        ResourcePackServer.getResourcePackURI(), ResourcePackServer.getResourcePackHash()))
+                .prompt(Component.text("This Resourcepack is required to play CraftRoyale!")).required(
+                        REQUIRE_RESOURCE_PACK)
+                .build();
         p.sendResourcePacks(resourcePackRequest);
     }
 
