@@ -14,7 +14,7 @@ public class ServerList {
         e.setStatus(Status.builder()
                 .description(Component.text("Welcome to CraftRoyale by Reptudn!", NamedTextColor.GOLD))
                 .playerInfo(onlinePlayers, 500)
-                .versionInfo(new Status.VersionInfo("CraftRoyale", 775))
+                .versionInfo(new Status.VersionInfo("Craft Royale", 70))
                 .build());
     }
 
