@@ -1,7 +1,10 @@
 package de.reptudn.Arenas;
 
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.instance.Instance;
+import net.minestom.server.coordinate.Point;
+import net.minestom.server.instance.InstanceContainer;
+import net.minestom.server.instance.LightingChunk;
+import net.minestom.server.instance.block.Block;
 
 public abstract class AArena {
 
@@ -24,8 +27,22 @@ public abstract class AArena {
         this.maxTrophies = maxTrophies;
     }
 
-    public Instance createInstance() {
-        Instance instance = MinecraftServer.getInstanceManager().createInstanceContainer();
+    // basic world for now... later load the corresponding arena map
+    public InstanceContainer createInstance() {
+        InstanceContainer instance = MinecraftServer.getInstanceManager().createInstanceContainer();
+        instance.setChunkSupplier(LightingChunk::new);
+        instance.setGenerator(unit -> {
+            final Point start = unit.absoluteStart();
+            final Point size = unit.size();
+            for (int x = 0; x < size.blockX(); x++) {
+                for (int z = 0; z < size.blockZ(); z++) {
+                    for (int y = 0; y < Math.min(40 - start.blockY(), size.blockY()); y++) {
+                        unit.modifier().setBlock(start.add(x, y, z), Block.DIAMOND_BLOCK);
+                    }
+                }
+            }
+        });
+
         // load the corresponding arena map here
         return instance;
     }

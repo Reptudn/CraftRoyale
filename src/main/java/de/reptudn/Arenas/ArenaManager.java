@@ -11,10 +11,6 @@ public class ArenaManager {
 		ARENAS.put("Goblin Stadium Duo", new DuoArena("Goblin Stadium Duo", 0, 300));
 	}
 
-	public static void registerArena(AArena arena) {
-		ARENAS.put(arena.getName(), arena);
-	}
-
 	public static AArena getArenaByName(String name) {
 		return ARENAS.get(name);
 	}
