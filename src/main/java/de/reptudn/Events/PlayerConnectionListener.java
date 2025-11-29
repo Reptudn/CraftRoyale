@@ -2,15 +2,19 @@ package de.reptudn.Events;
 
 import de.reptudn.Instances.InstanceManager;
 import de.reptudn.Resourcepack.ResourcePackServer;
-import de.reptudn.Utils.MessageFormat;
 import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
+import net.minestom.server.scoreboard.Team;
+
+import java.time.Duration;
 
 public class PlayerConnectionListener {
 
@@ -32,8 +36,16 @@ public class PlayerConnectionListener {
 
     public static void PlayerSpawnHandler(PlayerSpawnEvent e) {
         final Player p = e.getPlayer();
-        p.sendMessage(MessageFormat.getFormattedString("&6Welcome &e" + p.getUsername() + "&6 to the server!"));
-        p.setHealth(10000f);
+        p.showTitle(Title.title(
+                Component.text("Welcome ").color(NamedTextColor.GOLD)
+                        .append(Component.text(p.getUsername()).color(NamedTextColor.YELLOW)),
+                Component.text("to CraftRoyale!").color(NamedTextColor.GOLD),
+                Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(1), Duration.ofMillis(500))
+        ));
+
+        Team team = MinecraftServer.getTeamManager().createTeam(p.getUsername());
+        team.setTeamColor(NamedTextColor.DARK_GREEN);
+        p.setTeam(team);
     }
 
 }

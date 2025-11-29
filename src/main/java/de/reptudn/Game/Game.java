@@ -4,20 +4,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-// import java.util.UUID;
 
 import de.reptudn.Arenas.AArena;
-import de.reptudn.Entities.ATower;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.advancements.FrameType;
 import net.minestom.server.advancements.Notification;
-import net.minestom.server.entity.EntityCreature;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
@@ -32,8 +25,6 @@ public class Game {
 	private Instant endTime;
 	private final Duration maxGameDuration = Duration.ofMinutes(6);
 
-	private final Map<Team, Set<EntityCreature>> teamTroops = new HashMap<>();
-	private final Map<Team, Set<ATower>> teamTowers = new HashMap<>();
 	// private final Map<UUID, Team> playerTeams = new HashMap<>();
 
 	private final Instance gameInstance;
@@ -49,12 +40,6 @@ public class Game {
 		this.players.addAll(Arrays.asList(players));
 		this.state = GameState.WAITING;
 
-		this.teamTroops.put(Team.RED, new HashSet<>());
-		this.teamTroops.put(Team.BLUE, new HashSet<>());
-
-		this.teamTowers.put(Team.RED, new HashSet<>());
-		this.teamTowers.put(Team.BLUE, new HashSet<>());
-
 		// int i = 0;
 		// for (Player player : players) {
 		// Team team = (i % 2 == 0) ? Team.RED : Team.BLUE;
@@ -64,26 +49,6 @@ public class Game {
 
 		// create game instance here
 		gameInstance = arena.createInstance();
-	}
-
-	public void addTroopToTeam(Team team, EntityCreature troop) {
-		Set<EntityCreature> troops = teamTroops.get(team);
-		if (troops != null) {
-			troops.add(troop);
-		}
-	}
-
-	public Set<EntityCreature> getTroopsOfTeam(Team team) {
-		return teamTroops.get(team);
-	}
-
-	public Set<ATower> getTowersOfTeam(Team team) {
-		return teamTowers.get(team);
-	}
-
-	public Set<EntityCreature> getEnemyTroops(Team team) {
-		Team enemyTeam = (team == Team.RED) ? Team.BLUE : Team.RED;
-		return teamTroops.get(enemyTeam);
 	}
 
 	public AArena getArena() {

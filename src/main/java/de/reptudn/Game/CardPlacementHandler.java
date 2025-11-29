@@ -28,9 +28,10 @@ public class CardPlacementHandler {
 
 		switch (card) {
 			case TroopCard troopCard -> {
-				TroopCreature tc = new TroopCreature(troopCard, p.getInstance(), Team.BLUE, placementPos);
+				TroopCreature tc = new TroopCreature(troopCard, p.getInstance(), placementPos);
+                tc.setTeam(p.getTeam());
 				System.out.println("Placed troop: " + card.getName() + " at " + placementPos + " for player "
-						+ p.getUsername() + " as " + tc.toString());
+						+ p.getUsername() + " as " + tc);
 			}
 			case SpellCard spellCard -> System.out.println("SpellCards not implemented yet.");
 			case BuildingCard buildingCard -> System.out.println("BuildingCards not implemented yet.");

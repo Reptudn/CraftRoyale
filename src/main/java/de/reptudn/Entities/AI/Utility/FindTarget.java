@@ -6,16 +6,15 @@ import net.minestom.server.entity.Player;
 
 public class FindTarget {
 	public static EntityCreature closestEnemyTroop(EntityCreature origin) {
-		EntityCreature closest = origin.getInstance().getEntities().stream()
-				.filter(e -> e instanceof EntityCreature && e != origin)
-				.map(e -> (EntityCreature) e)
-				.min((e1, e2) -> {
-					double dist1 = e1.getPosition().distance(origin.getPosition());
-					double dist2 = e2.getPosition().distance(origin.getPosition());
-					return Double.compare(dist1, dist2);
-				})
-				.orElse(null);
-		return closest;
+        return origin.getInstance().getEntities().stream()
+                .filter(e -> e instanceof EntityCreature && e != origin)
+                .map(e -> (EntityCreature) e)
+                .min((e1, e2) -> {
+                    double dist1 = e1.getPosition().distance(origin.getPosition());
+                    double dist2 = e2.getPosition().distance(origin.getPosition());
+                    return Double.compare(dist1, dist2);
+                })
+                .orElse(null);
 	}
 
 	public static ATower closestEnemyTower(EntityCreature origin) {
@@ -68,4 +67,34 @@ public class FindTarget {
                 })
                 .orElse(null);
     }
+
+    public static EntityCreature closestEnemyTroopWithinDistance(EntityCreature origin, double maxDistance) {
+        return (EntityCreature) origin.getInstance().getEntities().stream()
+                .filter(p -> p.getPosition().distance(origin.getPosition()) <= maxDistance)
+                .filter(p -> p != origin)
+                .filter(p -> p instanceof EntityCreature)
+                .filter(p -> ((EntityCreature) p).getTeam() != origin.getTeam())
+                .min((p1, p2) -> {
+                    double dist1 = p1.getPosition().distance(origin.getPosition());
+                    double dist2 = p2.getPosition().distance(origin.getPosition());
+                    return Double.compare(dist1, dist2);
+                })
+                .orElse(null);
+    }
+
+    public static EntityCreature closestFriendlyTroopWithinDistance(EntityCreature origin, double maxDistance) {
+        return (EntityCreature) origin.getInstance().getEntities().stream()
+                .filter(p -> p.getPosition().distance(origin.getPosition()) <= maxDistance)
+                .filter(p -> p != origin)
+                .filter(p -> p instanceof EntityCreature)
+                .filter(p -> ((EntityCreature) p).getTeam() == origin.getTeam())
+                .min((p1, p2) -> {
+                    double dist1 = p1.getPosition().distance(origin.getPosition());
+                    double dist2 = p2.getPosition().distance(origin.getPosition());
+                    return Double.compare(dist1, dist2);
+                })
+                .orElse(null);
+    }
+
+
 }

@@ -3,10 +3,8 @@ package de.reptudn.Cards;
 import java.util.List;
 
 import de.reptudn.Entities.AI.Attack.AttackEntityCreature;
-import de.reptudn.Entities.AI.Attack.AttackPlayer;
 import de.reptudn.Entities.AI.IBehavior;
 import de.reptudn.Entities.AI.CollisionBehavior;
-import de.reptudn.Entities.AI.Movement.MoveToClosestPlayerBehavior;
 import de.reptudn.Entities.AI.Movement.MoveToClosestTroop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -17,40 +15,56 @@ import net.minestom.server.item.Material;
 public class TroopCard extends ACard {
 
     private final int hitpoints;
-    private final int damange;
-    private final double attackPeriod;
+    private final int damage;
+    private final long attackPeriod;
     private final double movementSpeed;
 
     private final double maxDetectionRange;
     private final double attackRange;
+    private final CardBehaviorType behaviorType;
 
     // TODO: add troop type and behavior type later
     // private final BehaviorType behaviorType = BehaviorType.ALL;
     // private final TroupType troopType = TroupType.GROUND;
 
-    public TroopCard(String name, CardRarity rarity, int exlicirCost, int hitpoints, int damage, double attackPeriod,
+    public TroopCard(String name, CardRarity rarity, CardBehaviorType behaviorType, int exlicirCost, int hitpoints, int damage, double attackPeriod,
             double movementSpeed, double maxDetectionRange, double attackRange) {
         super(name, rarity, CardType.TROOP, exlicirCost);
         this.hitpoints = hitpoints;
-        this.damange = damage;
-        this.attackPeriod = attackPeriod;
+        this.damage = damage;
+        this.attackPeriod = (long)(attackPeriod * 1000);
         this.movementSpeed = movementSpeed;
         this.maxDetectionRange = maxDetectionRange;
         this.attackRange = attackRange;
+        this.behaviorType = behaviorType;
     }
 
+    // TODO: adjust behaviors based on behaviorType and troopType
     @Override
     public List<IBehavior> getDefaultTroopBehaviors() {
-        return List.of(new MoveToClosestTroop(movementSpeed, maxDetectionRange, attackRange),
-                new CollisionBehavior(), new AttackEntityCreature(this.attackRange, (float) this.damange, (long) (this.attackPeriod * 1000)));
+        switch (behaviorType) {
+            case DEFENSIVE -> { return List.of(new MoveToClosestTroop(maxDetectionRange, attackRange),
+                    new CollisionBehavior(), new AttackEntityCreature(attackRange, this.damage, this.attackPeriod)); }
+            case AIR_ONLY -> { return List.of(new MoveToClosestTroop(maxDetectionRange, attackRange),
+                    new CollisionBehavior(), new AttackEntityCreature(attackRange, this.damage, this.attackPeriod)); }
+            case GROUND_ONLY -> { return List.of(new MoveToClosestTroop(maxDetectionRange, attackRange),
+                    new CollisionBehavior(), new AttackEntityCreature(attackRange, this.damage, this.attackPeriod)); }
+            default -> { return List.of(new MoveToClosestTroop(maxDetectionRange, attackRange),
+                    new CollisionBehavior(), new AttackEntityCreature(attackRange, this.damage, this.attackPeriod)); }
+        }
+
+    }
+
+    public double getMovementSpeed() {
+        return movementSpeed;
     }
 
     public int getHitpoints() {
         return hitpoints;
     }
 
-    public int getDamange() {
-        return damange;
+    public int getDamage() {
+        return damage;
     }
 
     public double getAttackPeriod() {
