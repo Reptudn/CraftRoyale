@@ -1,5 +1,7 @@
 package de.reptudn;
 
+import de.reptudn.Commands.Game.SoloQueueCommand;
+import de.reptudn.Commands.Test.SpawnTowerCommand;
 import de.reptudn.Events.ServerList;
 import net.minestom.server.Auth;
 import net.minestom.server.MinecraftServer;
@@ -61,6 +63,6 @@ public class Main {
     }
 
     private static void registerCommands() {
-        MinecraftServer.getCommandManager().register(new GiveCardCommand(), new ListAllCardsCommands());
+        MinecraftServer.getCommandManager().register(new GiveCardCommand(), new ListAllCardsCommands(), new SoloQueueCommand(), new SpawnTowerCommand());
     }
 }
