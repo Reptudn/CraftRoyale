@@ -1,5 +1,7 @@
 package de.reptudn.Events;
 
+import de.reptudn.Cards.ACard;
+import de.reptudn.Cards.CardManager;
 import de.reptudn.Instances.InstanceManager;
 import de.reptudn.Resourcepack.ResourcePackServer;
 import net.kyori.adventure.resource.ResourcePackInfo;
@@ -46,6 +48,11 @@ public class PlayerConnectionListener {
         Team team = MinecraftServer.getTeamManager().createTeam(p.getUsername());
         team.setTeamColor(NamedTextColor.DARK_GREEN);
         p.setTeam(team);
+
+        ACard card = CardManager.getCardByName("Golem");
+
+        p.getInventory()
+                .addItemStack(card.createItemStack());
     }
 
 }

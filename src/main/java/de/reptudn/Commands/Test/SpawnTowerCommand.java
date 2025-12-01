@@ -1,7 +1,12 @@
 package de.reptudn.Commands.Test;
 
+import de.reptudn.Entities.TowerEntity;
+import de.reptudn.Entities.TowerType;
+import de.reptudn.Game.CardPlacementHandler;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.Player;
 
 public class SpawnTowerCommand extends Command {
     public SpawnTowerCommand() {
@@ -14,13 +19,21 @@ public class SpawnTowerCommand extends Command {
         var towerTypeArg = ArgumentType.String("towerType");
         addSyntax((sender, commandContext) -> {
             String towerType = commandContext.get(towerTypeArg);
+            Player player = (Player) sender;
+            Pos placementPos = CardPlacementHandler.getPlacementPosition(player);
+            if (placementPos == null) {
+                placementPos = player.getPosition();
+            }
 
             switch (towerType) {
                 case "king" -> {
                     sender.sendMessage("Spawning king tower...");
+                    new TowerEntity(TowerType.KING, player, placementPos);
                 }
-                case "queen" -> {
+                case "princess" -> {
                     sender.sendMessage("Spawning queen tower...");
+                    new TowerEntity(TowerType.PRINCESS, player, placementPos);
+
                 }
                 default -> {
                     sender.sendMessage("Unknown tower type: " + towerType);

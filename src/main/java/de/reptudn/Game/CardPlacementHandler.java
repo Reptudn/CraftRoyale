@@ -6,6 +6,7 @@ import de.reptudn.Cards.CardManager;
 import de.reptudn.Cards.SpellCard;
 import de.reptudn.Cards.TroopCard;
 import de.reptudn.Entities.TroopCreature;
+import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerUseItemEvent;
@@ -25,6 +26,12 @@ public class CardPlacementHandler {
 		}
 
 		Pos placementPos = getPlacementPosition(p);
+        if (placementPos == null) {
+            p.sendMessage("Cannot place card here.");
+            System.out.println("Invalid placement position for player " + p.getUsername());
+            return;
+        }
+        CardPreviewHandler.startPreview(p);
 
 		switch (card) {
 			case TroopCard troopCard -> {
@@ -40,7 +47,14 @@ public class CardPlacementHandler {
 
 	}
 
-	private static Pos getPlacementPosition(Player p) {
-		return p.getPosition();
+	public static Pos getPlacementPosition(Player p) {
+
+        Point lookPos = p.getTargetBlockPosition(30);
+
+        if (lookPos == null) {
+            return null;
+        }
+
+		return lookPos.asPos().add(0, 1, 0);
 	}
 }

@@ -62,6 +62,7 @@ public class Game {
 
     private void setupSoloGame(Player team1, Player team2) {
         this.arena = ArenaManager.getArenaByName("Goblin Stadium");
+        // this.arena = ArenaManager.getArenaByTrophies();
         this.gameInstance = arena.createInstance();
 
         // assign teams
