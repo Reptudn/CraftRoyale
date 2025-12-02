@@ -25,7 +25,7 @@ public class MoveToClosestPlayerBehavior implements IBehavior {
             entity.setTarget(FindTarget.closestPlayerWithinDistance(entity, maxDetectionRange));
         }
 
-        if (!Pathfind.isValidTarget(entity, target)) {
+        if (target == null || !Pathfind.isValidTarget(entity, target)) {
             return;
         }
 

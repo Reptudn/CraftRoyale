@@ -22,17 +22,16 @@ public class MoveToClosestTroop implements IBehavior {
     public void tick(EntityCreature entity, long time) {
         Entity target = entity.getTarget();
         if (target == null || target.isRemoved()) {
-            entity.setTarget(FindTarget.closestEntityWithinDistance(entity, maxDetectionRange));
+            entity.setTarget(FindTarget.closestTroopWithinDistance(entity, maxDetectionRange));
         }
 
-        if (!Pathfind.isValidTarget(entity, target)) {
+        if (target == null || !Pathfind.isValidTarget(entity, target)) {
             return;
         }
 
         Navigator navigator = entity.getNavigator();
         Pos targetPos = target.getPosition();
         navigator.setPathTo(targetPos);
-
 
         if (entity.getPosition().distance(targetPos) <= attackRange) {
             navigator.setPathTo(null);

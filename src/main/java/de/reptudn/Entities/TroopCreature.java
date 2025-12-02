@@ -3,6 +3,8 @@ package de.reptudn.Entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import de.reptudn.Cards.TroopCard;
 import de.reptudn.Entities.AI.IBehavior;
 import net.kyori.adventure.text.Component;
@@ -28,8 +30,12 @@ public class TroopCreature extends EntityCreature {
 	private float customCurrentHealth;
 	private final float customMaxHealth;
 
+	private EntityCreature targetEntity;
+
 	public TroopCreature(TroopCard card, Instance instance, Pos spawnPos) {
 		super(EntityType.ZOMBIE);
+
+		this.targetEntity = null;
 
 		this.card = card;
 
@@ -40,13 +46,13 @@ public class TroopCreature extends EntityCreature {
 		addAIGroup(new EntityAIGroup() {
 			@Override
 			public void tick(long time) {
-                if (getHealth() <= 0) {
-                    // Death callback here later
-                    despawn();
-                    getViewersAsAudience().sendMessage(Component.text("Troop " + card.getName() + " has been defeated!")
-                            .color(NamedTextColor.RED));
-                    return;
-                }
+				if (getHealth() <= 0) {
+					// Death callback here later
+					despawn();
+					getViewersAsAudience().sendMessage(Component.text("Troop " + card.getName() + " has been defeated!")
+							.color(NamedTextColor.RED));
+					return;
+				}
 				runBehaviors(time);
 			}
 		});
@@ -56,7 +62,7 @@ public class TroopCreature extends EntityCreature {
 			meta.setHasGlowingEffect(true);
 		});
 
-        this.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(card.getMovementSpeed() / 20.0);
+		this.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(card.getMovementSpeed() / 20.0);
 
 		this.customMaxHealth = card.getHitpoints();
 		this.customCurrentHealth = (int) customMaxHealth;
@@ -98,17 +104,27 @@ public class TroopCreature extends EntityCreature {
 		return customCurrentHealth;
 	}
 
+	@Override
+	public EntityCreature getTarget() {
+		return targetEntity;
+	}
+
+	public void setTargetEntityCreature(@Nullable EntityCreature target) {
+		this.targetEntity = target;
+	}
+
 	private void updateHealthDisplay() {
-        Component nameComponent;
-        if (this.getTeam() != null)
-            nameComponent = Component.text(card.getName())
-				.color(this.getTeam().getTeamColor())
-				.append(Component.newline())
-				.append(createHealthBar());
-        else nameComponent = Component.text(card.getName())
-                .color(NamedTextColor.WHITE)
-                .append(Component.newline())
-                .append(createHealthBar());
+		Component nameComponent;
+		if (this.getTeam() != null)
+			nameComponent = Component.text(card.getName())
+					.color(this.getTeam().getTeamColor())
+					.append(Component.newline())
+					.append(createHealthBar());
+		else
+			nameComponent = Component.text(card.getName())
+					.color(NamedTextColor.WHITE)
+					.append(Component.newline())
+					.append(createHealthBar());
 
 		this.set(DataComponents.CUSTOM_NAME, nameComponent);
 	}
@@ -122,17 +138,17 @@ public class TroopCreature extends EntityCreature {
 
 		// Add filled portion (green/yellow/red based on health percentage)
 		TextColor healthColor = getHealthColor();
-        healthBar.append("|".repeat(Math.max(0, filledBars)));
+		healthBar.append("|".repeat(Math.max(0, filledBars)));
 
 		Component filledPortion = Component.text(healthBar.toString()).color(healthColor);
 
 		// Add empty portion (gray)
 		StringBuilder emptyBar = new StringBuilder();
-        emptyBar.append(" ".repeat(Math.max(0, barLength - filledBars)));
+		emptyBar.append(" ".repeat(Math.max(0, barLength - filledBars)));
 		Component emptyPortion = Component.text(emptyBar.toString()).color(NamedTextColor.DARK_GRAY);
 
 		// Add health numbers
-		Component healthText = Component.text(" " + (int)this.getHealth() + "/" + maxHealth)
+		Component healthText = Component.text(" " + (int) this.getHealth() + "/" + maxHealth)
 				.color(NamedTextColor.WHITE);
 
 		return filledPortion.append(emptyPortion).append(healthText);
@@ -143,9 +159,10 @@ public class TroopCreature extends EntityCreature {
 		currentHealth -= damage;
 		this.setHealth(currentHealth);
 
-        this.getViewers().forEach(player -> {
-            player.sendPacket(new EntityAnimationPacket(this.getEntityId(), EntityAnimationPacket.Animation.TAKE_DAMAGE));
-        });
+		this.getViewers().forEach(player -> {
+			player.sendPacket(
+					new EntityAnimationPacket(this.getEntityId(), EntityAnimationPacket.Animation.TAKE_DAMAGE));
+		});
 
 		this.updateHealthDisplay();
 

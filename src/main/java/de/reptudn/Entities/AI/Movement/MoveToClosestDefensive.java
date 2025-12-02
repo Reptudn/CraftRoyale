@@ -8,11 +8,13 @@ import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityCreature;
 import net.minestom.server.entity.pathfinding.Navigator;
 
-public class MoveToTower implements IBehavior {
+public class MoveToClosestDefensive implements IBehavior {
 
+	private final double maxDetectionRange;
 	private final double attackRange;
 
-	public MoveToTower(double attackRange) {
+	public MoveToClosestDefensive(double maxDetectionRange, double attackRange) {
+		this.maxDetectionRange = maxDetectionRange;
 		this.attackRange = attackRange;
 	}
 
@@ -20,7 +22,7 @@ public class MoveToTower implements IBehavior {
 	public void tick(EntityCreature entity, long time) {
 		Entity target = entity.getTarget();
 		if (target == null || target.isRemoved()) {
-			entity.setTarget(FindTarget.closestEnemyTower(entity));
+			entity.setTarget(FindTarget.closestEnemyDefenseWithinDistance(entity, maxDetectionRange));
 		}
 
 		if (target == null || !Pathfind.isValidTarget(entity, target)) {

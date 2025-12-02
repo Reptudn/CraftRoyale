@@ -7,18 +7,20 @@ import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityCreature;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
-import net.minestom.server.entity.metadata.display.ItemDisplayMeta;
 import net.minestom.server.entity.metadata.display.TextDisplayMeta;
-import net.minestom.server.scoreboard.Team;
 import net.minestom.server.timer.TaskSchedule;
-
-import static net.kyori.adventure.text.format.TextColor.color;
 
 public class TowerEntity extends EntityCreature {
 
-    private TowerType towerType;
+    private final TowerType towerType;
+    private final float maxHealth = 1000f;
+    private final double attackRange = 5.0;
+    private final long attackCooldownMillis = 2000;
 
-    public TowerEntity(TowerType type, Player owner, Pos pos) {
+    private float health;
+    private float attackDamage;
+
+    public TowerEntity(TowerType type, Player owner, Pos pos, float health, float attackDamage) {
         super(getEntityTypeForTowerType(type));
         this.setTeam(owner.getTeam());
         this.towerType = type;
@@ -37,8 +39,10 @@ public class TowerEntity extends EntityCreature {
 
             if (this.getHealth() <= 0 || isRemoved() || isDead()) {
                 nameDisplay.remove();
+                getInstance().sendMessage(Component.text("The " + (towerType == TowerType.KING ? "King" : "Princess")
+                        + " Tower of Team " + (this.getTeam() != null ? this.getTeam().getTeamName() : "(no team)")
+                        + " has been destroyed!").color(NamedTextColor.RED));
                 remove();
-                getInstance().sendMessage(Component.text("The " + (towerType == TowerType.KING ? "King" : "Princess") + " Tower of Team" + (this.getTeam() != null ? this.getTeam().getTeamName() : "(no team)") +" has been destroyed!").color(NamedTextColor.RED));
                 return TaskSchedule.stop();
             }
 
@@ -46,12 +50,28 @@ public class TowerEntity extends EntityCreature {
         }, TaskSchedule.tick(1));
     }
 
-
     private static EntityType getEntityTypeForTowerType(TowerType towerType) {
         return switch (towerType) {
             case KING -> EntityType.ELDER_GUARDIAN;
             case PRINCESS -> EntityType.GLOW_SQUID;
         };
+    }
+
+    @Override
+    public float getHealth() {
+        return health;
+    }
+
+    @Override
+    public void setHealth(float health) {
+        this.health = Math.min(health, maxHealth);
+    }
+
+    public void damage(float damage) {
+        setHealth(getHealth() - damage);
+        if (getHealth() <= 0) {
+            remove();
+        }
     }
 
     public TowerType getTowerType() {
