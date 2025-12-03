@@ -1,5 +1,11 @@
 package de.reptudn.Entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import de.reptudn.Entities.AI.IBehavior;
+import de.reptudn.Entities.AI.Attack.AttackClosestEnemyTroop;
+import de.reptudn.Entities.AI.Utility.FindTarget;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.coordinate.Pos;
@@ -7,6 +13,7 @@ import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityCreature;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
+import net.minestom.server.entity.ai.EntityAIGroup;
 import net.minestom.server.entity.metadata.display.TextDisplayMeta;
 import net.minestom.server.timer.TaskSchedule;
 
@@ -16,6 +23,8 @@ public class TowerEntity extends EntityCreature {
     private final float maxHealth = 1000f;
     private final double attackRange = 5.0;
     private final long attackCooldownMillis = 2000;
+
+    private final List<IBehavior> behaviors = new ArrayList<>();
 
     private float health;
     private float attackDamage;
@@ -34,20 +43,29 @@ public class TowerEntity extends EntityCreature {
         nameDisplay.setNoGravity(true);
 
         nameDisplay.setInstance(owner.getInstance(), pos.add(0, 3, 0));
+        behaviors.add(new AttackClosestEnemyTroop(this.attackRange, this.attackDamage, this.attackCooldownMillis));
 
-        this.scheduler().scheduleTask(() -> {
-
-            if (this.getHealth() <= 0 || isRemoved() || isDead()) {
-                nameDisplay.remove();
-                getInstance().sendMessage(Component.text("The " + (towerType == TowerType.KING ? "King" : "Princess")
-                        + " Tower of Team " + (this.getTeam() != null ? this.getTeam().getTeamName() : "(no team)")
-                        + " has been destroyed!").color(NamedTextColor.RED));
-                remove();
-                return TaskSchedule.stop();
+        addAIGroup(new EntityAIGroup() {
+            @Override
+            public void tick(long time) {
+                if (getHealth() <= 0) {
+                    // Death callback here later
+                    despawn();
+                    nameDisplay.remove();
+                    getViewersAsAudience()
+                            .sendMessage(Component.text((towerType == TowerType.KING ? "King" : "Princess")
+                                    + " Tower has been destroyed!").color(NamedTextColor.RED));
+                    return;
+                }
+                runBehaviors(time);
             }
+        });
+    }
 
-            return TaskSchedule.tick(5);
-        }, TaskSchedule.tick(1));
+    private void runBehaviors(long time) {
+        for (IBehavior behavior : behaviors) {
+            behavior.tick(this, time);
+        }
     }
 
     private static EntityType getEntityTypeForTowerType(TowerType towerType) {
