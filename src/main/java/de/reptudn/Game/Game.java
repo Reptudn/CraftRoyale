@@ -17,7 +17,6 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import net.minestom.server.scoreboard.Team;
-import net.minestom.server.timer.Scheduler;
 import net.minestom.server.timer.TaskSchedule;
 
 public class Game {
@@ -32,55 +31,55 @@ public class Game {
 
 	private Instance gameInstance;
 
-	private final float START_ELIXIR = 10f; // is equal to 5 elixir
-	private final float MAX_ELIXIR = 18f;
-	private final float PER_TICK_INCOME = 0.2f;
+	private final int START_ELIXIR = 10; // is equal to 5 elixir
+	private final int MAX_ELIXIR = 20;
+	private final int PER_TICK_INCOME = 0;
 	private float ELIXIR_MULTIPLIER = 1f;
 	private final int TICKS_PER_SECOND = 10;
 
 	public Game(Player... players) {
 
-        if (players.length == 0) {
-            throw new IllegalArgumentException("At least one player is required to start a game.");
-        }
+		if (players.length == 0) {
+			throw new IllegalArgumentException("At least one player is required to start a game.");
+		}
 
-        if (players.length != 2 && players.length != 4) {
-            throw new IllegalArgumentException("Only 2 or 4 players are allowed to start a game.");
-        }
+		if (players.length != 2 && players.length != 4) {
+			throw new IllegalArgumentException("Only 2 or 4 players are allowed to start a game.");
+		}
 
-        if (players.length == 2) {
-            setupSoloGame(players[0], players[1]);
-        } else {
-            // assign teams for 2v2
-            // e.g., players[0], players[1] -> RED, players[2], players[3] -> BLUE
-        }
+		if (players.length == 2) {
+			setupSoloGame(players[0], players[1]);
+		} else {
+			// assign teams for 2v2
+			// e.g., players[0], players[1] -> RED, players[2], players[3] -> BLUE
+		}
 
 		this.players.addAll(Arrays.asList(players));
 		this.state = GameState.WAITING;
 
 	}
 
-    private void setupSoloGame(Player team1, Player team2) {
-        this.arena = ArenaManager.getArenaByName("Goblin Stadium");
-        // this.arena = ArenaManager.getArenaByTrophies();
-        this.gameInstance = arena.createInstance();
+	private void setupSoloGame(Player team1, Player team2) {
+		this.arena = ArenaManager.getArenaByName("Goblin Stadium");
+		// this.arena = ArenaManager.getArenaByTrophies();
+		this.gameInstance = arena.createInstance();
 
-        // assign teams
-        Team scoreboardTeam1 = MinecraftServer.getTeamManager().createTeam(team1.getName().toString());
-        scoreboardTeam1.setTeamColor(NamedTextColor.RED);
-        Team scoreboardTeam2 = MinecraftServer.getTeamManager().createTeam(team2.getName().toString());
-        scoreboardTeam1.setTeamColor(NamedTextColor.BLUE);
-        team1.setTeam(scoreboardTeam1);
-        team2.setTeam(scoreboardTeam2);
+		// assign teams
+		Team scoreboardTeam1 = MinecraftServer.getTeamManager().createTeam(team1.getName().toString());
+		scoreboardTeam1.setTeamColor(NamedTextColor.RED);
+		Team scoreboardTeam2 = MinecraftServer.getTeamManager().createTeam(team2.getName().toString());
+		scoreboardTeam1.setTeamColor(NamedTextColor.BLUE);
+		team1.setTeam(scoreboardTeam1);
+		team2.setTeam(scoreboardTeam2);
 
-        // teleport players to spawn points
-        team1.setInstance(gameInstance);
-        team2.setInstance(gameInstance);
-    }
+		// teleport players to spawn points
+		team1.setInstance(gameInstance);
+		team2.setInstance(gameInstance);
+	}
 
-    private void setupDuoGame(Player team1Player1, Player team1Player2, Player team2Player1, Player team2Player2) {
-        throw new IllegalArgumentException("Duo not implemented yet.");
-    }
+	private void setupDuoGame(Player team1Player1, Player team1Player2, Player team2Player1, Player team2Player2) {
+		throw new IllegalArgumentException("Duo not implemented yet.");
+	}
 
 	public AArena getArena() {
 		return arena;
@@ -90,7 +89,7 @@ public class Game {
 		return players;
 	}
 
-    public void startGame() {
+	public void startGame() {
 		this.state = GameState.IN_PROGRESS;
 		this.startTime = Instant.now();
 
@@ -101,11 +100,19 @@ public class Game {
 					new Notification(Component.text("Game started!"), FrameType.GOAL, Material.SADDLE));
 		});
 
-        Scheduler gameScheduler = MinecraftServer.getSchedulerManager();
-		gameScheduler.submitTask(() -> {
-            if (this.state != GameState.IN_PROGRESS) {
-                return TaskSchedule.stop();
-            }
+		// Scheduler gameScheduler = MinecraftServer.getSchedulerManager();
+		// gameScheduler.submitTask(() -> {
+		// if (this.state != GameState.IN_PROGRESS) {
+		// return TaskSchedule.stop();
+		// }
+		// tickGame(Duration.between(this.startTime, Instant.now()).toMinutes());
+		// return TaskSchedule.millis(1000 / TICKS_PER_SECOND);
+		// });
+
+		this.gameInstance.scheduler().submitTask(() -> {
+			if (this.state != GameState.IN_PROGRESS) {
+				return TaskSchedule.stop();
+			}
 			tickGame(Duration.between(this.startTime, Instant.now()).toMinutes());
 			return TaskSchedule.millis(1000 / TICKS_PER_SECOND);
 		});
@@ -118,18 +125,18 @@ public class Game {
 		// check win condition
 		// end game when its over
 
-        if (timeElapsedInMinutes >= 6) {
-            endGame();
-            return;
-        } else if (timeElapsedInMinutes >= 3) {
-            ELIXIR_MULTIPLIER = 3f;
-        } else if (timeElapsedInMinutes >= 2) {
-            ELIXIR_MULTIPLIER = 1.5f;
-        }
+		if (timeElapsedInMinutes >= 6) {
+			endGame();
+			return;
+		} else if (timeElapsedInMinutes >= 3) {
+			ELIXIR_MULTIPLIER = 3;
+		} else if (timeElapsedInMinutes >= 2) {
+			ELIXIR_MULTIPLIER = 1.5f;
+		}
 
 		this.players.forEach(player -> {
-			player.setFoodSaturation(
-					Math.max(player.getFoodSaturation() + (PER_TICK_INCOME * ELIXIR_MULTIPLIER), MAX_ELIXIR));
+			player.setFood(
+					(int) Math.max(player.getFood() + (PER_TICK_INCOME * ELIXIR_MULTIPLIER), MAX_ELIXIR));
 		});
 	}
 

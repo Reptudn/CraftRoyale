@@ -14,12 +14,18 @@ public class SoloQueueCommand extends Command {
 
         setDefaultExecutor((commandSender, commandContext) -> {
             if (!(commandSender instanceof Player)) {
-                commandSender.sendMessage("This command can only be executed by a player.");
+                if (commandSender != null)
+                    commandSender.sendMessage("This command can only be executed by a player.");
                 return;
             }
 
             Player player = (Player) commandSender;
 
+            if (GameManager.isPlayerInSoloQueue(player)) {
+                commandSender.sendMessage(MessageFormat.getFormattedString("You are currently in the solo queue."));
+            } else {
+                commandSender.sendMessage(MessageFormat.getFormattedString("You are not in the solo queue."));
+            }
 
         });
 
@@ -32,24 +38,24 @@ public class SoloQueueCommand extends Command {
                 case "join" -> {
                     try {
                         GameManager.addPlayerToSoloQueue(player);
-                        sender.sendMessage(MessageFormat.getFormattedString("You have joined the solo queue."));
+                        player.sendMessage(MessageFormat.getFormattedString("You have joined the solo queue."));
                     } catch (PlayerAlreadyInQueueException e) {
-                        sender.sendMessage(MessageFormat.getFormattedString(e.getMessage()));
+                        player.sendMessage(MessageFormat.getFormattedString(e.getMessage()));
                     }
                 }
                 case "leave" -> {
                     try {
                         GameManager.removePlayerFromSoloQueue(player);
-                        sender.sendMessage(MessageFormat.getFormattedString("You have left the solo queue."));
+                        player.sendMessage(MessageFormat.getFormattedString("You have left the solo queue."));
                     } catch (PlayerNotInQueueException e) {
-                        sender.sendMessage(MessageFormat.getFormattedString(e.getMessage()));
+                        player.sendMessage(MessageFormat.getFormattedString(e.getMessage()));
                     }
                     // Logic to remove player from solo queue
-                    sender.sendMessage(MessageFormat.getFormattedString("You have left the solo queue."));
+                    player.sendMessage(MessageFormat.getFormattedString("You have left the solo queue."));
                 }
-                default -> sender.sendMessage(MessageFormat.getFormattedString("Invalid action. Use 'join' or 'leave'."));
+                default ->
+                    player.sendMessage(MessageFormat.getFormattedString("Invalid action. Use 'join' or 'leave'."));
             }
-            sender.sendMessage("Solo Queue command with syntax executed.");
         }, queueAction);
     }
 }

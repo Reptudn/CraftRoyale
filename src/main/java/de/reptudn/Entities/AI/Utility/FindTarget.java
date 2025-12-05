@@ -81,6 +81,7 @@ public class FindTarget {
         return (TroopCreature) origin.getInstance().getEntities().stream()
                 .filter(p -> p != origin)
                 .filter(p -> p instanceof TroopCreature)
+                .map(p -> (TroopCreature) p)
                 .min((p1, p2) -> {
                     double dist1 = p1.getPosition().distance(origin.getPosition());
                     double dist2 = p2.getPosition().distance(origin.getPosition());
@@ -90,10 +91,11 @@ public class FindTarget {
     }
 
     public static TroopCreature closestTroopWithinDistance(EntityCreature origin, double maxDistance) {
-        return (TroopCreature) origin.getInstance().getEntities().stream()
-                .filter(p -> p.getPosition().distance(origin.getPosition()) <= maxDistance)
+        return origin.getInstance().getEntities().stream()
                 .filter(p -> p != origin)
                 .filter(p -> p instanceof TroopCreature)
+                .map(p -> (TroopCreature) p)
+                .filter(p -> p.getPosition().distance(origin.getPosition()) <= maxDistance)
                 .min((p1, p2) -> {
                     double dist1 = p1.getPosition().distance(origin.getPosition());
                     double dist2 = p2.getPosition().distance(origin.getPosition());

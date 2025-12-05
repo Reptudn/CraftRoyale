@@ -20,39 +20,41 @@ import java.time.Duration;
 
 public class PlayerConnectionListener {
 
-    private static final boolean REQUIRE_RESOURCE_PACK = false; // TODO: make resourcepacks work in the future
+        private static final boolean REQUIRE_RESOURCE_PACK = false; // TODO: make resourcepacks work in the future
 
-    public static void ConfigurationEventHandler(AsyncPlayerConfigurationEvent e) {
-        final Player p = e.getPlayer();
-        e.setSpawningInstance(InstanceManager.getInstanceById("lobby"));
-        p.setRespawnPoint(new Pos(0, 42, 0));
+        public static void ConfigurationEventHandler(AsyncPlayerConfigurationEvent e) {
+                final Player p = e.getPlayer();
+                e.setSpawningInstance(InstanceManager.getInstanceById("lobby"));
+                p.setRespawnPoint(new Pos(0, 42, 0));
 
-        ResourcePackRequest resourcePackRequest = ResourcePackRequest.resourcePackRequest()
-                .packs(ResourcePackInfo.resourcePackInfo(ResourcePackServer.getResourcePackUUID(),
-                        ResourcePackServer.getResourcePackURI(), ResourcePackServer.getResourcePackHash()))
-                .prompt(Component.text("This Resourcepack is required to play CraftRoyale!")).required(
-                        REQUIRE_RESOURCE_PACK)
-                .build();
-        p.sendResourcePacks(resourcePackRequest);
-    }
+                ResourcePackRequest resourcePackRequest = ResourcePackRequest.resourcePackRequest()
+                                .packs(ResourcePackInfo.resourcePackInfo(ResourcePackServer.getResourcePackUUID(),
+                                                ResourcePackServer.getResourcePackURI(),
+                                                ResourcePackServer.getResourcePackHash()))
+                                .prompt(Component.text("This Resourcepack is required to play CraftRoyale!")).required(
+                                                REQUIRE_RESOURCE_PACK)
+                                .build();
+                p.sendResourcePacks(resourcePackRequest);
+        }
 
-    public static void PlayerSpawnHandler(PlayerSpawnEvent e) {
-        final Player p = e.getPlayer();
-        p.showTitle(Title.title(
-                Component.text("Welcome ").color(NamedTextColor.GOLD)
-                        .append(Component.text(p.getUsername()).color(NamedTextColor.YELLOW)),
-                Component.text("to CraftRoyale!").color(NamedTextColor.GOLD),
-                Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(1), Duration.ofMillis(500))
-        ));
+        public static void PlayerSpawnHandler(PlayerSpawnEvent e) {
+                final Player p = e.getPlayer();
+                p.showTitle(Title.title(
+                                Component.text("Welcome ").color(NamedTextColor.GOLD)
+                                                .append(Component.text(p.getUsername()).color(NamedTextColor.YELLOW)),
+                                Component.text("to CraftRoyale!").color(NamedTextColor.GOLD),
+                                Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(1),
+                                                Duration.ofMillis(500))));
 
-        Team team = MinecraftServer.getTeamManager().createTeam(p.getUsername());
-        team.setTeamColor(NamedTextColor.DARK_GREEN);
-        p.setTeam(team);
+                Team team = MinecraftServer.getTeamManager().createTeam(p.getUsername());
+                team.setTeamColor(NamedTextColor.DARK_GREEN);
+                p.setTeam(team);
 
-        ACard card = CardManager.getCardByName("Golem");
+                p.getInventory()
+                                .addItemStack(CardManager.getCardByName("Golem").createItemStack());
 
-        p.getInventory()
-                .addItemStack(card.createItemStack());
-    }
+                p.getInventory()
+                                .addItemStack(CardManager.getCardByName("Archers").createItemStack());
+        }
 
 }

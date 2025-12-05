@@ -26,17 +26,22 @@ public class CardPlacementHandler {
 		}
 
 		Pos placementPos = getPlacementPosition(p);
-        if (placementPos == null) {
-            p.sendMessage("Cannot place card here.");
-            System.out.println("Invalid placement position for player " + p.getUsername());
-            return;
-        }
-        CardPreviewHandler.startPreview(p);
+		if (placementPos == null) {
+			p.sendMessage("Cannot place card here.");
+			System.out.println("Invalid placement position for player " + p.getUsername());
+			return;
+		}
+		CardPreviewHandler.startPreview(p);
 
 		switch (card) {
 			case TroopCard troopCard -> {
+				if (!canAffordCard(card, p)) {
+					p.sendMessage("Can't afford that card!");
+					return;
+				}
 				TroopCreature tc = new TroopCreature(troopCard, p.getInstance(), placementPos);
-                tc.setTeam(p.getTeam());
+				tc.setTeam(p.getTeam());
+				p.setFood(Math.max(p.getFood() - card.getElixirCost() * 2, 0));
 				System.out.println("Placed troop: " + card.getName() + " at " + placementPos + " for player "
 						+ p.getUsername() + " as " + tc);
 			}
@@ -49,12 +54,16 @@ public class CardPlacementHandler {
 
 	public static Pos getPlacementPosition(Player p) {
 
-        Point lookPos = p.getTargetBlockPosition(30);
+		Point lookPos = p.getTargetBlockPosition(30);
 
-        if (lookPos == null) {
-            return null;
-        }
+		if (lookPos == null) {
+			return null;
+		}
 
-		return lookPos.asPos().add(0, 1, 0);
+		return lookPos.asPos().add(0.5, 1, 0.5);
+	}
+
+	public static boolean canAffordCard(ACard card, Player player) {
+		return card.getElixirCost() <= (player.getFood() / 2);
 	}
 }

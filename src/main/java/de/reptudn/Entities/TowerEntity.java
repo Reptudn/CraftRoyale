@@ -14,6 +14,7 @@ import net.minestom.server.entity.EntityCreature;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.ai.EntityAIGroup;
+import net.minestom.server.entity.metadata.display.AbstractDisplayMeta;
 import net.minestom.server.entity.metadata.display.TextDisplayMeta;
 import net.minestom.server.timer.TaskSchedule;
 
@@ -39,6 +40,7 @@ public class TowerEntity extends EntityCreature {
 
         TextDisplayMeta meta = (TextDisplayMeta) nameDisplay.getEntityMeta();
         meta.setText(Component.text(type == TowerType.KING ? "King Tower" : "Princess Tower"));
+        meta.setBillboardRenderConstraints(AbstractDisplayMeta.BillboardConstraints.FIXED);
 
         nameDisplay.setNoGravity(true);
 
@@ -70,7 +72,7 @@ public class TowerEntity extends EntityCreature {
 
     private static EntityType getEntityTypeForTowerType(TowerType towerType) {
         return switch (towerType) {
-            case KING -> EntityType.ELDER_GUARDIAN;
+            case KING -> EntityType.IRON_GOLEM;
             case PRINCESS -> EntityType.GLOW_SQUID;
         };
     }

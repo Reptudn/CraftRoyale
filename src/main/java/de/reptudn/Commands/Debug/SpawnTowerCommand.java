@@ -1,4 +1,4 @@
-package de.reptudn.Commands.Test;
+package de.reptudn.Commands.Debug;
 
 import de.reptudn.Entities.TowerEntity;
 import de.reptudn.Entities.TowerType;

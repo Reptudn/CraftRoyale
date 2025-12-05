@@ -1,7 +1,5 @@
 package de.reptudn;
 
-import de.reptudn.Commands.Game.SoloQueueCommand;
-import de.reptudn.Commands.Test.SpawnTowerCommand;
 import de.reptudn.Events.PlayerInventoryUpdate;
 import de.reptudn.Events.PlayerItemChangeEvent;
 import de.reptudn.Events.ServerList;
@@ -16,8 +14,12 @@ import net.minestom.server.event.player.PlayerSpawnEvent;
 import net.minestom.server.event.server.ServerListPingEvent;
 import net.minestom.server.instance.LightingChunk;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.timer.TaskSchedule;
 import de.reptudn.Commands.Cards.GiveCardCommand;
 import de.reptudn.Commands.Cards.ListAllCardsCommands;
+import de.reptudn.Commands.Debug.KillAllEntitiesCommand;
+import de.reptudn.Commands.Debug.SpawnTowerCommand;
+import de.reptudn.Commands.Game.SoloQueueCommand;
 import de.reptudn.Events.PlayerConnectionListener;
 import de.reptudn.Game.CardPlacementHandler;
 import de.reptudn.Instances.InstanceManager;
@@ -25,8 +27,6 @@ import de.reptudn.Resourcepack.ResourcePackServer;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 
 public class Main {
-
-    // private static final boolean ONLINEMODE = false;
 
     public static void main(String[] args) {
         System.out.println("Initializing server...");
@@ -36,9 +36,15 @@ public class Main {
         // SERVER = MinecraftServer.init(new Auth.Online());
         // else
         // MinecraftServer.init();
-        MinecraftServer SERVER = MinecraftServer.init(new Auth.Online());
+        MinecraftServer SERVER;
+        if (Settings.ONLINE_MODE) {
+            SERVER = MinecraftServer.init(new Auth.Online());
+        } else {
+            SERVER = MinecraftServer.init();
+        }
 
-        InstanceManager.createInstance("lobby").setGenerator(unit -> {
+        var lobbyInstance = InstanceManager.createInstance("lobby");
+        lobbyInstance.setGenerator(unit -> {
             final Point start = unit.absoluteStart();
             final Point size = unit.size();
             for (int x = 0; x < size.blockX(); x++) {
@@ -49,15 +55,26 @@ public class Main {
                 }
             }
         });
-        InstanceManager.getInstanceById("lobby").setChunkSupplier(LightingChunk::new);
+        lobbyInstance.setChunkSupplier(LightingChunk::new);
+        lobbyInstance.scheduler().submitTask(() -> {
+            for (var player : lobbyInstance.getPlayers()) {
+                if (player.getInstance() != null) {
+                    player.setFood(Math.min(player.getFood() + 1, 20));
+                }
+            }
+            return TaskSchedule.tick(5);
+        });
 
         registerEvents();
         registerCommands();
 
-        System.out.println("Starting server...");
+        System.out.println("Starting Minecraft Server on " + Settings.HOST_ADDRESS + ":" + Settings.PORT + "...");
 
-        ResourcePackServer.start(25566);
-        SERVER.start("0.0.0.0", 25565);
+        ResourcePackServer.start(Settings.PORT_RESOURCEPACK);
+
+        MinecraftServer.setBrandName("CraftRoyale by Reptudn");
+
+        SERVER.start(Settings.HOST_ADDRESS, Settings.PORT);
     }
 
     private static void registerEvents() {
@@ -74,6 +91,7 @@ public class Main {
     }
 
     private static void registerCommands() {
-        MinecraftServer.getCommandManager().register(new GiveCardCommand(), new ListAllCardsCommands(), new SoloQueueCommand(), new SpawnTowerCommand());
+        MinecraftServer.getCommandManager().register(new GiveCardCommand(), new ListAllCardsCommands(),
+                new SoloQueueCommand(), new SpawnTowerCommand(), new KillAllEntitiesCommand());
     }
 }

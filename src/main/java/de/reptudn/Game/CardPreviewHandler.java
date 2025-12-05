@@ -48,9 +48,8 @@ public class CardPreviewHandler {
             if (previewPos == null) {
                 previewEntity.teleport(new Pos(0, -100, 0));
             } else {
-                Pos alteredPreviewPos = previewPos.add(0, 1.2, 0);
-                if (!previewEntity.getPosition().equals(alteredPreviewPos))
-                    previewEntity.teleport(alteredPreviewPos);
+                if (!previewEntity.getPosition().equals(previewPos))
+                    previewEntity.teleport(previewPos);
             }
 
             return TaskSchedule.tick(PREVIEW_UPDATE_DELAY_TICKS);
@@ -74,7 +73,6 @@ public class CardPreviewHandler {
         meta.setInvisible(false);
         meta.setSilent(true);
         meta.setHasGlowingEffect(true);
-        meta.setScale(new Vec(0.5, 0.5, 0.5));
         meta.setTransformationInterpolationStartDelta(10);
         meta.setTransformationInterpolationDuration(2);
 
@@ -85,10 +83,9 @@ public class CardPreviewHandler {
 
         Pos placementPos = CardPlacementHandler.getPlacementPosition(player);
         if (placementPos == null) {
-            placementPos = new Pos(0, -100, 0);
-        } else {
-            placementPos = placementPos.add(0, 1.2, 0);
+            placementPos = new Pos(0.5, -100, 0.5);
         }
+
         previewItem.setInstance(player.getInstance(), placementPos);
 
         return previewItem;

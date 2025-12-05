@@ -13,6 +13,8 @@ public class MoveToClosestTroop implements IBehavior {
     private final double maxDetectionRange;
     private final double attackRange;
 
+    private Entity target = null;
+
     public MoveToClosestTroop(double maxDetectionRange, double attackRange) {
         this.maxDetectionRange = maxDetectionRange;
         this.attackRange = attackRange;
@@ -20,15 +22,18 @@ public class MoveToClosestTroop implements IBehavior {
 
     @Override
     public void tick(EntityCreature entity, long time) {
-        Entity target = entity.getTarget();
+        // Entity target = entity.getTarget();
         if (target == null || target.isRemoved()) {
-            entity.setTarget(FindTarget.closestTroopWithinDistance(entity, maxDetectionRange));
+            // entity.setTarget(FindTarget.closestEntity(entity));
+            target = FindTarget.closestEntity(entity);
         }
 
+        // target = entity.getTarget();
+        // target = FindTarget.closestEntity(entity);
         if (target == null || !Pathfind.isValidTarget(entity, target)) {
+            System.out.println("No valid troop target found within detection range.");
             return;
         }
-
         Navigator navigator = entity.getNavigator();
         Pos targetPos = target.getPosition();
         navigator.setPathTo(targetPos);
