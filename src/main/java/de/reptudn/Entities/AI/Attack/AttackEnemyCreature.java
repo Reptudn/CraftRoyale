@@ -2,18 +2,17 @@ package de.reptudn.Entities.AI.Attack;
 
 import de.reptudn.Entities.AI.IBehavior;
 import de.reptudn.Entities.AI.Utility.FindTarget;
+import de.reptudn.Entities.KingTowerEntity;
 import de.reptudn.Entities.TroopCreature;
 import net.minestom.server.entity.EntityCreature;
 import net.minestom.server.network.packet.server.play.EntityAnimationPacket;
 
-import de.reptudn.Entities.KingTowerEntity;
-
-public class AttackEntityCreature implements IBehavior {
+public class AttackEnemyCreature implements IBehavior {
     private final double attackRange;
     private final float damage;
     private final long attackCooldownMillis;
 
-    public AttackEntityCreature(double attackRange, float damage, long attackCooldownMillis) {
+    public AttackEnemyCreature(double attackRange, float damage, long attackCooldownMillis) {
         this.damage = damage;
         this.attackRange = attackRange;
         this.attackCooldownMillis = attackCooldownMillis;
@@ -23,7 +22,7 @@ public class AttackEntityCreature implements IBehavior {
 
     @Override
     public void tick(EntityCreature entity, long time) {
-        EntityCreature ec = FindTarget.closestEntity(entity);
+        EntityCreature ec = FindTarget.closestEnemyEntity(entity);
 
         if (ec == null)
             return;

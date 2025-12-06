@@ -1,25 +1,27 @@
 package de.reptudn.Entities;
 
-public abstract class ATower {
-	protected int health;
-	protected int damage;
-	protected TowerType towerType;
+import net.minestom.server.entity.EntityCreature;
+import net.minestom.server.entity.EntityType;
 
-	public ATower(TowerType towerType, int health, int damage) {
-		this.towerType = towerType;
-		this.health = health;
+public abstract class ATower extends EntityCreature {
+	protected float health;
+	protected float damage;
+
+	public ATower(float health, float damage, EntityType type) {
+        super(type);
+        this.health = health;
 		this.damage = damage;
 	}
 
-	public int getHealth() {
+	public float getHealth() {
 		return health;
 	}
 
-	public int getDamage() {
+	public float getDamage() {
 		return damage;
 	}
 
-	public void takeDamage(int damage) {
+	public void takeDamage(float damage) {
 		this.health -= damage;
 		if (this.health < 0) {
 			this.health = 0;

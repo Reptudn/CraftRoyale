@@ -14,6 +14,8 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
+import net.minestom.server.instance.Instance;
+import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.scoreboard.Scoreboard;
 import net.minestom.server.scoreboard.Sidebar;
 import net.minestom.server.scoreboard.Team;
@@ -25,46 +27,52 @@ public class PlayerConnectionListener {
     private static final boolean REQUIRE_RESOURCE_PACK = false; // TODO: make resourcepacks work in the future
 
     public static void ConfigurationEventHandler(AsyncPlayerConfigurationEvent e) {
-            final Player p = e.getPlayer();
-            e.setSpawningInstance(InstanceManager.getInstanceById("lobby"));
-            p.setRespawnPoint(new Pos(0, 42, 0));
+        final Player p = e.getPlayer();
+        e.setSpawningInstance(InstanceManager.getInstanceById("lobby"));
+        p.setRespawnPoint(new Pos(0, 42, 0));
 
-            ResourcePackRequest resourcePackRequest = ResourcePackRequest.resourcePackRequest()
-                            .packs(ResourcePackInfo.resourcePackInfo(ResourcePackServer.getResourcePackUUID(),
-                                            ResourcePackServer.getResourcePackURI(),
-                                            ResourcePackServer.getResourcePackHash()))
-                            .prompt(Component.text("This Resourcepack is required to play CraftRoyale!")).required(
-                                            REQUIRE_RESOURCE_PACK)
-                            .build();
-            p.sendResourcePacks(resourcePackRequest);
+        ResourcePackRequest resourcePackRequest = ResourcePackRequest.resourcePackRequest()
+            .packs(ResourcePackInfo.resourcePackInfo(ResourcePackServer.getResourcePackUUID(),
+                            ResourcePackServer.getResourcePackURI(),
+                            ResourcePackServer.getResourcePackHash()))
+            .prompt(Component.text("This Resourcepack is required to play CraftRoyale!")).required(
+                            REQUIRE_RESOURCE_PACK)
+            .build();
+        p.sendResourcePacks(resourcePackRequest);
+
+        Team team = MinecraftServer.getTeamManager().createTeam(p.getUsername());
+        team.setTeamColor(NamedTextColor.DARK_GREEN);
+        p.setTeam(team);
     }
 
+    // happens every time the player spawns into any instance also when switching instance and respawning
     public static void PlayerSpawnHandler(PlayerSpawnEvent e) {
-            final Player p = e.getPlayer();
-            p.showTitle(Title.title(
-                            Component.text("Welcome ").color(NamedTextColor.GOLD)
-                                            .append(Component.text(p.getUsername()).color(NamedTextColor.YELLOW)),
-                            Component.text("to CraftRoyale!").color(NamedTextColor.GOLD),
-                            Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(1),
-                                            Duration.ofMillis(500))));
+        final Player p = e.getPlayer();
+        final Instance instance = e.getInstance();
 
-            Team team = MinecraftServer.getTeamManager().createTeam(p.getUsername());
-            team.setTeamColor(NamedTextColor.DARK_GREEN);
-            p.setTeam(team);
+        switch (InstanceManager.getInstanceNameByUUID(instance.getUuid())) {
+            case "lobby" -> {
+                p.showTitle(Title.title(
+                        Component.text("Welcome ").color(NamedTextColor.GOLD)
+                                .append(Component.text(p.getUsername()).color(NamedTextColor.YELLOW)),
+                        Component.text("to CraftRoyale!").color(NamedTextColor.GOLD),
+                        Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(1),
+                                Duration.ofMillis(500))));
+                // Lobby Sidebar
+                Sidebar sidebar = new Sidebar(Component.text("CraftRoyale").color(NamedTextColor.GOLD));
+                sidebar.createLine(new Sidebar.ScoreboardLine("divider", Component.text("----------------").color(NamedTextColor.DARK_GRAY), 15));
+                sidebar.createLine(new Sidebar.ScoreboardLine("welcome", Component.text("Welcome, " + p.getUsername() + "!").color(NamedTextColor.YELLOW), 14));
+                sidebar.createLine(new Sidebar.ScoreboardLine("current_trophies", Component.text("Current Trophies: 0").color(NamedTextColor.AQUA), 14));
+                sidebar.createLine(new Sidebar.ScoreboardLine("divider2", Component.text("----------------").color(NamedTextColor.DARK_GRAY), 12));
 
-            Sidebar sidebar = new Sidebar(Component.text("CraftRoyale").color(NamedTextColor.GOLD));
-            sidebar.createLine(new Sidebar.ScoreboardLine("divider", Component.text("----------------").color(NamedTextColor.DARK_GRAY), 15));
-            sidebar.createLine(new Sidebar.ScoreboardLine("welcome", Component.text("Welcome, " + p.getUsername() + "!").color(NamedTextColor.YELLOW), 14));
-            sidebar.createLine(new Sidebar.ScoreboardLine("current_trophies", Component.text("Current Trophies: 0").color(NamedTextColor.AQUA), 14));
-            sidebar.createLine(new Sidebar.ScoreboardLine("divider2", Component.text("----------------").color(NamedTextColor.DARK_GRAY), 12));
+                sidebar.addViewer(p);
+            }
+            case null -> {return;}
+            default -> {
+                return;
+            }
+        }
 
-            sidebar.addViewer(p);
-
-            p.getInventory()
-                            .addItemStack(CardManager.getCardByName("Golem").createItemStack());
-
-            p.getInventory()
-                            .addItemStack(CardManager.getCardByName("Archers").createItemStack());
     }
 
 }

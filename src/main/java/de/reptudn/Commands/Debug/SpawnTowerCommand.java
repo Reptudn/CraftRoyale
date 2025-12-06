@@ -1,7 +1,6 @@
 package de.reptudn.Commands.Debug;
 
-import de.reptudn.Entities.TowerEntity;
-import de.reptudn.Entities.TowerType;
+import de.reptudn.Entities.KingTowerEntity;
 import de.reptudn.Game.CardPlacementHandler;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -28,11 +27,11 @@ public class SpawnTowerCommand extends Command {
             switch (towerType) {
                 case "king" -> {
                     sender.sendMessage("Spawning king tower...");
-                    new TowerEntity(TowerType.KING, player, placementPos, 5000, 60);
+                    new KingTowerEntity(TowerType.KING, player, placementPos, 5000, 60, player.getInstance());
                 }
                 case "princess" -> {
                     sender.sendMessage("Spawning princess tower...");
-                    new TowerEntity(TowerType.PRINCESS, player, placementPos, 3000, 40);
+                    new KingTowerEntity(TowerType.PRINCESS, player, placementPos, 3000, 40, player.getInstance());
                 }
                 default -> {
                     sender.sendMessage("Unknown tower type: " + towerType);

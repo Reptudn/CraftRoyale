@@ -28,7 +28,6 @@ public class SoloQueueCommand extends Command {
 
         ArgumentString queueAction = ArgumentType.String("queueAction");
 
-        // Add tab completion
         queueAction.setSuggestionCallback((sender, context, suggestion) -> {
             suggestion.addEntry(new SuggestionEntry("join"));
             suggestion.addEntry(new SuggestionEntry("leave"));

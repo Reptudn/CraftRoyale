@@ -1,6 +1,5 @@
 package de.reptudn.Entities.AI.Attack;
 
-import de.reptudn.Entities.TowerEntity;
 import de.reptudn.Entities.AI.IBehavior;
 import de.reptudn.Entities.AI.Utility.FindTarget;
 import de.reptudn.Entities.TroopCreature;

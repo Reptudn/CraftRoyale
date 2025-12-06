@@ -1,6 +1,6 @@
 package de.reptudn.Commands.Debug;
 
-import de.reptudn.Entities.TowerEntity;
+import de.reptudn.Entities.KingTowerEntity;
 import de.reptudn.Entities.TroopCreature;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -13,7 +13,7 @@ public class KillAllEntitiesCommand extends Command {
 		setDefaultExecutor((sender, commandContext) -> {
 			Player player = (Player) sender;
 			player.getInstance().getEntities().stream()
-					.filter(entity -> entity instanceof TowerEntity || entity instanceof TroopCreature)
+					.filter(entity -> entity instanceof KingTowerEntity || entity instanceof TroopCreature)
 					.forEach(entity -> entity.remove());
 			sender.sendMessage("KillAllEntities command executed.");
 		});
@@ -26,7 +26,7 @@ public class KillAllEntitiesCommand extends Command {
 			switch (type.toLowerCase()) {
 				case "tower" -> {
 					player.getInstance().getEntities().stream()
-							.filter(entity -> entity instanceof TowerEntity)
+							.filter(entity -> entity instanceof KingTowerEntity)
 							.forEach(entity -> entity.remove());
 					player.sendMessage("All towers have been killed.");
 				}

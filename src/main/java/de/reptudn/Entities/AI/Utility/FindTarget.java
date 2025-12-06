@@ -1,6 +1,6 @@
 package de.reptudn.Entities.AI.Utility;
 
-import de.reptudn.Entities.TowerEntity;
+import de.reptudn.Entities.KingTowerEntity;
 import de.reptudn.Entities.TroopCreature;
 import net.minestom.server.entity.EntityCreature;
 import net.minestom.server.entity.Player;
@@ -8,7 +8,7 @@ import net.minestom.server.entity.Player;
 public class FindTarget {
     public static TroopCreature closestEnemyTroop(EntityCreature origin) {
         return origin.getInstance().getEntities().stream()
-                .filter(e -> e instanceof TroopCreature && e != origin)
+                .filter(e -> e instanceof TroopCreature && e != origin && ((EntityCreature) e).getTeam() != origin.getTeam())
                 .map(e -> (TroopCreature) e)
                 .min((e1, e2) -> {
                     double dist1 = e1.getPosition().distance(origin.getPosition());
@@ -18,11 +18,22 @@ public class FindTarget {
                 .orElse(null);
     }
 
-    public static TowerEntity closestEnemyTower(EntityCreature origin) {
+    public static EntityCreature closestEnemyEntity(EntityCreature origin) {
+        return (EntityCreature) origin.getInstance().getEntities().stream()
+                .filter(e -> e instanceof EntityCreature && e != origin && ((EntityCreature) e).getTeam() != origin.getTeam())
+                .min((e1, e2) -> {
+                    double dist1 = e1.getPosition().distance(origin.getPosition());
+                    double dist2 = e2.getPosition().distance(origin.getPosition());
+                    return Double.compare(dist1, dist2);
+                })
+                .orElse(null);
+    }
+
+    public static KingTowerEntity closestEnemyTower(EntityCreature origin) {
         return origin.getInstance().getEntities().stream()
-                .filter(e -> e instanceof TowerEntity && e != origin
+                .filter(e -> e instanceof KingTowerEntity && e != origin
                         && ((EntityCreature) e).getTeam() != origin.getTeam())
-                .map(e -> (TowerEntity) e)
+                .map(e -> (KingTowerEntity) e)
                 .min((e1, e2) -> {
                     double dist1 = e1.getPosition().distance(origin.getPosition());
                     double dist2 = e2.getPosition().distance(origin.getPosition());
@@ -104,10 +115,10 @@ public class FindTarget {
                 .orElse(null);
     }
 
-    public static TowerEntity closestEnemyDefense(EntityCreature origin) {
-        return (TowerEntity) origin.getInstance().getEntities().stream()
+    public static KingTowerEntity closestEnemyDefense(EntityCreature origin) {
+        return (KingTowerEntity) origin.getInstance().getEntities().stream()
                 .filter(p -> p != origin)
-                .filter(p -> p instanceof TowerEntity)
+                .filter(p -> p instanceof KingTowerEntity)
                 .filter(p -> ((EntityCreature) p).getTeam() != origin.getTeam())
                 .min((p1, p2) -> {
                     double dist1 = p1.getPosition().distance(origin.getPosition());
@@ -117,7 +128,7 @@ public class FindTarget {
                 .orElse(null);
     }
 
-    public static TowerEntity closestEnemyDefenseWithinDistance(EntityCreature origin, double maxDistance) {
+    public static KingTowerEntity closestEnemyDefenseWithinDistance(EntityCreature origin, double maxDistance) {
         return null;
     }
 

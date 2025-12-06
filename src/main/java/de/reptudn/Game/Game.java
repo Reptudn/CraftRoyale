@@ -8,6 +8,8 @@ import java.util.List;
 
 import de.reptudn.Arenas.AArena;
 import de.reptudn.Arenas.ArenaManager;
+import de.reptudn.Entities.KingTowerEntity;
+import de.reptudn.Instances.InstanceManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
@@ -109,12 +111,16 @@ public class Game {
 			player.setInstance(gameInstance);
 			player.setFoodSaturation(START_ELIXIR);
             sb.addViewer(player);
+
+            new KingTowerEntity(TowerType.KING, player, player.getPosition(), 5000, 200, gameInstance);
+
 			player.sendNotification(
 					new Notification(Component.text("Game started!"), FrameType.GOAL, Material.SADDLE));
 		});
 
 		this.gameInstance.scheduler().submitTask(() -> {
 			if (this.state != GameState.IN_PROGRESS) {
+                endGame();
 				return TaskSchedule.stop();
 			}
 			tickGame(Duration.between(this.startTime, Instant.now()).toMinutes());
@@ -152,6 +158,13 @@ public class Game {
 	public void endGame() {
 		this.state = GameState.ENDED;
 		this.endTime = Instant.now();
+
+        this.players.forEach(player -> {
+            player.sendNotification(
+                    new Notification(Component.text("Game ended!"), FrameType.CHALLENGE, Material.BARRIER));
+            this.sidebar.removeViewer(player);
+            player.setInstance(InstanceManager.getInstanceById("lobby"));
+        });
 		// save game into db or something
 		// put players back into the normal instance (lobby)
 	}

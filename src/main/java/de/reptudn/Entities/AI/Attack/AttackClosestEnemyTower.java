@@ -2,7 +2,7 @@ package de.reptudn.Entities.AI.Attack;
 
 import de.reptudn.Entities.AI.IBehavior;
 import de.reptudn.Entities.AI.Utility.FindTarget;
-import de.reptudn.Entities.TowerEntity;
+import de.reptudn.Entities.KingTowerEntity;
 import net.minestom.server.entity.EntityCreature;
 import net.minestom.server.network.packet.server.play.EntityAnimationPacket;
 
@@ -22,7 +22,7 @@ public class AttackClosestEnemyTower implements IBehavior {
 
 	@Override
 	public void tick(EntityCreature entity, long time) {
-		TowerEntity tower = FindTarget.closestEnemyTower(entity);
+		KingTowerEntity tower = FindTarget.closestEnemyTower(entity);
 
 		if (tower == null)
 			return;

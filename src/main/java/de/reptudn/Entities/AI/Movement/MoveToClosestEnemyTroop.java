@@ -12,16 +12,17 @@ public class MoveToClosestEnemyTroop implements IBehavior {
     private final double maxDetectionRange;
     private final double attackRange;
 
-    public MoveToClosestEnemyTroop(double movementSpeed, double maxDetectionRange, double attackRange) {
+    EntityCreature target = null;
+
+    public MoveToClosestEnemyTroop(double maxDetectionRange, double attackRange) {
         this.maxDetectionRange = maxDetectionRange;
         this.attackRange = attackRange;
     }
 
     @Override
     public void tick(EntityCreature entity, long time) {
-        EntityCreature target = (EntityCreature) entity.getTarget();
         if (target == null || target.isRemoved() || target.getHealth() <= 0) {
-            entity.setTarget(FindTarget.closestEnemyTroopWithinDistance(entity, maxDetectionRange));
+            target = FindTarget.closestEnemyTroopWithinDistance(entity, maxDetectionRange);
         }
 
         if (!Pathfind.isValidTarget(entity, target)) {
