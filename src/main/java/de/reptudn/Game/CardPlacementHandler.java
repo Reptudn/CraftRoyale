@@ -42,8 +42,9 @@ public class CardPlacementHandler {
 				TroopCreature tc = new TroopCreature(troopCard, p.getInstance(), placementPos);
 				tc.setTeam(p.getTeam());
 				p.setFood(Math.max(p.getFood() - card.getElixirCost() * 2, 0));
-				System.out.println("Placed troop: " + card.getName() + " at " + placementPos + " for player "
-						+ p.getUsername() + " as " + tc);
+				// System.out.println("Placed troop: " + card.getName() + " at " + placementPos
+				// + " for player "
+				// + p.getUsername() + " as " + tc);
 			}
 			case SpellCard spellCard -> System.out.println("SpellCards not implemented yet.");
 			case BuildingCard buildingCard -> System.out.println("BuildingCards not implemented yet.");

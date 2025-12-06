@@ -27,13 +27,9 @@ public class GiveCardCommand extends Command {
         cardNameArg.setSuggestionCallback((sender, context, suggestion) -> {
             String currentInput = context.getInput().toLowerCase();
 
-            // Get all card names and filter based on current input
-            CardManager.getCards().keySet().forEach(cardName -> {
-                // Only suggest cards that start with the current input
-                if (cardName.toLowerCase().startsWith(currentInput) || currentInput.isEmpty()) {
-                    suggestion.addEntry(new SuggestionEntry(cardName));
-                }
-            });
+            CardManager.getCards().keySet().stream()
+                    .filter(cardName -> cardName.toLowerCase().startsWith(currentInput))
+                    .forEach(cardName -> suggestion.addEntry(new SuggestionEntry(cardName)));
         });
 
         addSyntax((sender, commandContext) -> {

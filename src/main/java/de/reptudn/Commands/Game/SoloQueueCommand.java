@@ -6,6 +6,8 @@ import de.reptudn.Game.GameManager;
 import de.reptudn.Utils.MessageFormat;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import net.minestom.server.command.builder.arguments.ArgumentString;
+import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.entity.Player;
 
 public class SoloQueueCommand extends Command {
@@ -13,28 +15,36 @@ public class SoloQueueCommand extends Command {
         super("soloqueue", "squeue", "sq");
 
         setDefaultExecutor((commandSender, commandContext) -> {
-            if (!(commandSender instanceof Player)) {
-                if (commandSender != null)
-                    commandSender.sendMessage("This command can only be executed by a player.");
-                return;
-            }
+            System.out.println("SoloQueueCommand executed");
 
-            Player player = (Player) commandSender;
-
-            if (GameManager.isPlayerInSoloQueue(player)) {
+            if (GameManager.isPlayerInSoloQueue((Player) commandSender)) {
                 commandSender.sendMessage(MessageFormat.getFormattedString("You are currently in the solo queue."));
             } else {
                 commandSender.sendMessage(MessageFormat.getFormattedString("You are not in the solo queue."));
             }
-
         });
 
-        var queueAction = ArgumentType.String("queueAction");
+        ArgumentString queueAction = ArgumentType.String("queueAction");
+
+        // Add tab completion
+        queueAction.setSuggestionCallback((sender, context, suggestion) -> {
+            suggestion.addEntry(new SuggestionEntry("join"));
+            suggestion.addEntry(new SuggestionEntry("leave"));
+        });
+
         addSyntax((sender, commandContext) -> {
+            System.out.println("Soloq command executed with syntax");
+            if (!(sender instanceof Player player)) {
+                if (sender != null)
+                    sender.sendMessage(
+                            MessageFormat.getFormattedString("This command can only be executed by a player."));
+                return;
+            }
 
-            Player player = (Player) sender;
+            // Get the argument correctly
+            String action = commandContext.get(queueAction);
 
-            switch (commandContext.get("queueAction").toString()) {
+            switch (action) {
                 case "join" -> {
                     try {
                         GameManager.addPlayerToSoloQueue(player);
@@ -50,11 +60,10 @@ public class SoloQueueCommand extends Command {
                     } catch (PlayerNotInQueueException e) {
                         player.sendMessage(MessageFormat.getFormattedString(e.getMessage()));
                     }
-                    // Logic to remove player from solo queue
-                    player.sendMessage(MessageFormat.getFormattedString("You have left the solo queue."));
                 }
-                default ->
+                default -> {
                     player.sendMessage(MessageFormat.getFormattedString("Invalid action. Use 'join' or 'leave'."));
+                }
             }
         }, queueAction);
     }

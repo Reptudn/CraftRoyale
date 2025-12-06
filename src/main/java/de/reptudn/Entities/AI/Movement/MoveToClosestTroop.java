@@ -25,13 +25,13 @@ public class MoveToClosestTroop implements IBehavior {
         // Entity target = entity.getTarget();
         if (target == null || target.isRemoved()) {
             // entity.setTarget(FindTarget.closestEntity(entity));
-            target = FindTarget.closestEntity(entity);
+            target = FindTarget.closestTroop(entity);
         }
 
-        // target = entity.getTarget();
+        target = entity.getTarget();
         // target = FindTarget.closestEntity(entity);
         if (target == null || !Pathfind.isValidTarget(entity, target)) {
-            System.out.println("No valid troop target found within detection range.");
+            // System.out.println("No valid troop target found within detection range.");
             return;
         }
         Navigator navigator = entity.getNavigator();
