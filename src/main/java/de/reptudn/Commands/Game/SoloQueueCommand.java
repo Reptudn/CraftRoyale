@@ -15,12 +15,14 @@ public class SoloQueueCommand extends Command {
         super("soloqueue", "squeue", "sq");
 
         setDefaultExecutor((commandSender, commandContext) -> {
-            System.out.println("SoloQueueCommand executed");
+            Player player = (Player) commandSender;
 
-            if (GameManager.isPlayerInSoloQueue((Player) commandSender)) {
-                commandSender.sendMessage(MessageFormat.getFormattedString("You are currently in the solo queue."));
+            if (GameManager.isPlayerInSoloQueue(player)) {
+                System.out.println("Player is in solo queue");
+                player.sendMessage(MessageFormat.getFormattedString("You are currently in the solo queue."));
             } else {
-                commandSender.sendMessage(MessageFormat.getFormattedString("You are not in the solo queue."));
+                System.out.println("Player is not in solo queue");
+                player.sendMessage(MessageFormat.getFormattedString("You are not in the solo queue."));
             }
         });
 
@@ -33,18 +35,13 @@ public class SoloQueueCommand extends Command {
         });
 
         addSyntax((sender, commandContext) -> {
-            System.out.println("Soloq command executed with syntax");
             if (!(sender instanceof Player player)) {
-                if (sender != null)
-                    sender.sendMessage(
-                            MessageFormat.getFormattedString("This command can only be executed by a player."));
+                sender.sendMessage(
+                        MessageFormat.getFormattedString("This command can only be executed by a player."));
                 return;
             }
 
-            // Get the argument correctly
-            String action = commandContext.get(queueAction);
-
-            switch (action) {
+            switch (commandContext.get(queueAction)) {
                 case "join" -> {
                     try {
                         GameManager.addPlayerToSoloQueue(player);

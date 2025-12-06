@@ -16,6 +16,7 @@ import net.minestom.server.advancements.Notification;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
+import net.minestom.server.scoreboard.Sidebar;
 import net.minestom.server.scoreboard.Team;
 import net.minestom.server.timer.TaskSchedule;
 
@@ -36,6 +37,8 @@ public class Game {
 	private final int PER_TICK_INCOME = 0;
 	private float ELIXIR_MULTIPLIER = 1f;
 	private final int TICKS_PER_SECOND = 10;
+
+    private Sidebar sidebar;
 
 	public Game(Player... players) {
 
@@ -93,21 +96,22 @@ public class Game {
 		this.state = GameState.IN_PROGRESS;
 		this.startTime = Instant.now();
 
+        Sidebar sb = new Sidebar(Component.text("CraftRoyale").color(NamedTextColor.GOLD));
+        sb.createLine(new Sidebar.ScoreboardLine("divider", Component.text("----------------").color(NamedTextColor.DARK_GRAY), 15));
+        sb.createLine(new Sidebar.ScoreboardLine("game_mode", Component.text("Mode: Solo").color(NamedTextColor.YELLOW), 14));
+        sb.createLine(new Sidebar.ScoreboardLine("time_elapsed", Component.text("Time remaining: " + maxGameDuration.toString()).color(NamedTextColor.AQUA), 13));
+        sb.createLine(new Sidebar.ScoreboardLine("elixir_multiplier", Component.text("Current Multiplier: " + ELIXIR_MULTIPLIER).color(NamedTextColor.AQUA), 13));
+        sb.createLine(new Sidebar.ScoreboardLine("divider2", Component.text("----------------").color(NamedTextColor.DARK_GRAY), 12));
+
+        this.sidebar = sb;
+
 		this.players.forEach(player -> {
 			player.setInstance(gameInstance);
 			player.setFoodSaturation(START_ELIXIR);
+            sb.addViewer(player);
 			player.sendNotification(
 					new Notification(Component.text("Game started!"), FrameType.GOAL, Material.SADDLE));
 		});
-
-		// Scheduler gameScheduler = MinecraftServer.getSchedulerManager();
-		// gameScheduler.submitTask(() -> {
-		// if (this.state != GameState.IN_PROGRESS) {
-		// return TaskSchedule.stop();
-		// }
-		// tickGame(Duration.between(this.startTime, Instant.now()).toMinutes());
-		// return TaskSchedule.millis(1000 / TICKS_PER_SECOND);
-		// });
 
 		this.gameInstance.scheduler().submitTask(() -> {
 			if (this.state != GameState.IN_PROGRESS) {
@@ -130,9 +134,14 @@ public class Game {
 			return;
 		} else if (timeElapsedInMinutes >= 3) {
 			ELIXIR_MULTIPLIER = 3;
+            this.sidebar.updateLineContent("elixir_multiplier", Component.text("Current Multiplier: " + ELIXIR_MULTIPLIER).color(NamedTextColor.AQUA));
 		} else if (timeElapsedInMinutes >= 2) {
 			ELIXIR_MULTIPLIER = 1.5f;
+            this.sidebar.updateLineContent("elixir_multiplier", Component.text("Current Multiplier: " + ELIXIR_MULTIPLIER).color(NamedTextColor.AQUA));
 		}
+
+        long timeRemaining = maxGameDuration.toMinutes() - timeElapsedInMinutes;
+        this.sidebar.updateLineContent("time_elapsed", Component.text("Time remaining: " + timeRemaining + " min").color(NamedTextColor.AQUA));
 
 		this.players.forEach(player -> {
 			player.setFood(
