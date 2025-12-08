@@ -1,5 +1,7 @@
 package de.reptudn.Game;
 
+import org.jetbrains.annotations.Nullable;
+
 import de.reptudn.Cards.ACard;
 import de.reptudn.Cards.BuildingCard;
 import de.reptudn.Cards.CardManager;
@@ -53,6 +55,7 @@ public class CardPlacementHandler {
 
 	}
 
+	@Nullable
 	public static Pos getPlacementPosition(Player p) {
 
 		Point lookPos = p.getTargetBlockPosition(30);

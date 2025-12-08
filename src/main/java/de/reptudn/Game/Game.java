@@ -64,6 +64,24 @@ public class Game {
 
 	}
 
+	public static Game createDebugGame(Player player) {
+		System.out.println("Creating debug game for player: " + player.getName());
+		Game game = new Game(player);
+		game.arena = ArenaManager.getArenaByName("Goblin Stadium");
+		game.gameInstance = game.arena.createInstance();
+
+		Team scoreboardTeam1 = MinecraftServer.getTeamManager().createTeam(player.getName().toString());
+		scoreboardTeam1.setTeamColor(NamedTextColor.RED);
+		player.setTeam(scoreboardTeam1);
+
+		player.setInstance(game.gameInstance);
+		game.players.add(player);
+
+		game.startGame();
+		System.out.println("Debug game started for player: " + player.getName());
+		return game;
+	}
+
 	private void setupSoloGame(Player team1, Player team2) {
 		this.arena = ArenaManager.getArenaByName("Goblin Stadium");
 		// this.arena = ArenaManager.getArenaByTrophies();
@@ -117,10 +135,11 @@ public class Game {
 			player.setFoodSaturation(START_ELIXIR);
 			sb.addViewer(player);
 
-			new KingTowerEntity(player, player.getPosition(), 5000, 200, gameInstance);
+			KingTowerEntity kt = new KingTowerEntity(player, player.getPosition(), 5000, 200, gameInstance);
 
 			player.sendNotification(
 					new Notification(Component.text("Game started!"), FrameType.GOAL, Material.SADDLE));
+
 		});
 
 		this.gameInstance.scheduler().submitTask(() -> {

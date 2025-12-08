@@ -7,15 +7,12 @@ import de.reptudn.Entities.AI.IBehavior;
 import de.reptudn.Entities.AI.Attack.AttackClosestEnemyTroop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.component.DataComponents;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.*;
 import net.minestom.server.entity.ai.EntityAIGroup;
-import net.minestom.server.entity.metadata.golem.IronGolemMeta;
-import net.minestom.server.entity.metadata.water.GlowSquidMeta;
 import net.minestom.server.instance.Instance;
 
-public class KingTowerEntity extends ATower {
+public class PrincessTowerEntity extends ATower {
 
     private final float maxHealth = 1000f;
     private final double attackRange = 5.0;
@@ -26,8 +23,8 @@ public class KingTowerEntity extends ATower {
     private float health;
     private float attackDamage;
 
-    public KingTowerEntity(Player owner, Pos pos, float health, float attackDamage, Instance instace) {
-        super(health, attackDamage, EntityType.ALLAY);
+    public PrincessTowerEntity(Player owner, Pos pos, float health, float attackDamage, Instance instace) {
+        super(health, attackDamage, EntityType.CAMEL);
         this.setTeam(owner.getTeam());
         this.setInstance(instace, pos);
         this.health = health;

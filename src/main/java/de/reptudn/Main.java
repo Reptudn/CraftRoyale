@@ -19,6 +19,7 @@ import de.reptudn.Commands.Cards.GiveCardCommand;
 import de.reptudn.Commands.Cards.ListAllCardsCommands;
 import de.reptudn.Commands.Debug.KillAllEntitiesCommand;
 import de.reptudn.Commands.Debug.SpawnTowerCommand;
+import de.reptudn.Commands.Debug.StartSoloGame;
 import de.reptudn.Commands.Game.SoloQueueCommand;
 import de.reptudn.Events.PlayerConnectionListener;
 import de.reptudn.Game.CardPlacementHandler;
@@ -92,6 +93,6 @@ public class Main {
 
     private static void registerCommands() {
         MinecraftServer.getCommandManager().register(new GiveCardCommand(), new ListAllCardsCommands(),
-                new SoloQueueCommand(), new SpawnTowerCommand(), new KillAllEntitiesCommand());
+                new SoloQueueCommand(), new SpawnTowerCommand(), new KillAllEntitiesCommand(), new StartSoloGame());
     }
 }
