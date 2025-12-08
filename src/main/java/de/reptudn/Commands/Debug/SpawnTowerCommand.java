@@ -27,11 +27,11 @@ public class SpawnTowerCommand extends Command {
             switch (towerType) {
                 case "king" -> {
                     sender.sendMessage("Spawning king tower...");
-                    new KingTowerEntity(TowerType.KING, player, placementPos, 5000, 60, player.getInstance());
+                    new KingTowerEntity(player, placementPos, 5000, 60, player.getInstance());
                 }
                 case "princess" -> {
                     sender.sendMessage("Spawning princess tower...");
-                    new KingTowerEntity(TowerType.PRINCESS, player, placementPos, 3000, 40, player.getInstance());
+                    new KingTowerEntity(player, placementPos, 3000, 40, player.getInstance());
                 }
                 default -> {
                     sender.sendMessage("Unknown tower type: " + towerType);

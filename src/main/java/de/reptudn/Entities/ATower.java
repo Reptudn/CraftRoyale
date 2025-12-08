@@ -8,8 +8,8 @@ public abstract class ATower extends EntityCreature {
 	protected float damage;
 
 	public ATower(float health, float damage, EntityType type) {
-        super(type);
-        this.health = health;
+		super(type);
+		this.health = health;
 		this.damage = damage;
 	}
 

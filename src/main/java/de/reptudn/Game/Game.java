@@ -40,7 +40,7 @@ public class Game {
 	private float ELIXIR_MULTIPLIER = 1f;
 	private final int TICKS_PER_SECOND = 10;
 
-    private Sidebar sidebar;
+	private Sidebar sidebar;
 
 	public Game(Player... players) {
 
@@ -98,21 +98,26 @@ public class Game {
 		this.state = GameState.IN_PROGRESS;
 		this.startTime = Instant.now();
 
-        Sidebar sb = new Sidebar(Component.text("CraftRoyale").color(NamedTextColor.GOLD));
-        sb.createLine(new Sidebar.ScoreboardLine("divider", Component.text("----------------").color(NamedTextColor.DARK_GRAY), 15));
-        sb.createLine(new Sidebar.ScoreboardLine("game_mode", Component.text("Mode: Solo").color(NamedTextColor.YELLOW), 14));
-        sb.createLine(new Sidebar.ScoreboardLine("time_elapsed", Component.text("Time remaining: " + maxGameDuration.toString()).color(NamedTextColor.AQUA), 13));
-        sb.createLine(new Sidebar.ScoreboardLine("elixir_multiplier", Component.text("Current Multiplier: " + ELIXIR_MULTIPLIER).color(NamedTextColor.AQUA), 13));
-        sb.createLine(new Sidebar.ScoreboardLine("divider2", Component.text("----------------").color(NamedTextColor.DARK_GRAY), 12));
+		Sidebar sb = new Sidebar(Component.text("CraftRoyale").color(NamedTextColor.GOLD));
+		sb.createLine(new Sidebar.ScoreboardLine("divider",
+				Component.text("----------------").color(NamedTextColor.DARK_GRAY), 15));
+		sb.createLine(
+				new Sidebar.ScoreboardLine("game_mode", Component.text("Mode: Solo").color(NamedTextColor.YELLOW), 14));
+		sb.createLine(new Sidebar.ScoreboardLine("time_elapsed",
+				Component.text("Time remaining: " + maxGameDuration.toString()).color(NamedTextColor.AQUA), 13));
+		sb.createLine(new Sidebar.ScoreboardLine("elixir_multiplier",
+				Component.text("Current Multiplier: " + ELIXIR_MULTIPLIER).color(NamedTextColor.AQUA), 13));
+		sb.createLine(new Sidebar.ScoreboardLine("divider2",
+				Component.text("----------------").color(NamedTextColor.DARK_GRAY), 12));
 
-        this.sidebar = sb;
+		this.sidebar = sb;
 
 		this.players.forEach(player -> {
 			player.setInstance(gameInstance);
 			player.setFoodSaturation(START_ELIXIR);
-            sb.addViewer(player);
+			sb.addViewer(player);
 
-            new KingTowerEntity(TowerType.KING, player, player.getPosition(), 5000, 200, gameInstance);
+			new KingTowerEntity(player, player.getPosition(), 5000, 200, gameInstance);
 
 			player.sendNotification(
 					new Notification(Component.text("Game started!"), FrameType.GOAL, Material.SADDLE));
@@ -120,7 +125,7 @@ public class Game {
 
 		this.gameInstance.scheduler().submitTask(() -> {
 			if (this.state != GameState.IN_PROGRESS) {
-                endGame();
+				endGame();
 				return TaskSchedule.stop();
 			}
 			tickGame(Duration.between(this.startTime, Instant.now()).toMinutes());
@@ -140,14 +145,17 @@ public class Game {
 			return;
 		} else if (timeElapsedInMinutes >= 3) {
 			ELIXIR_MULTIPLIER = 3;
-            this.sidebar.updateLineContent("elixir_multiplier", Component.text("Current Multiplier: " + ELIXIR_MULTIPLIER).color(NamedTextColor.AQUA));
+			this.sidebar.updateLineContent("elixir_multiplier",
+					Component.text("Current Multiplier: " + ELIXIR_MULTIPLIER).color(NamedTextColor.AQUA));
 		} else if (timeElapsedInMinutes >= 2) {
 			ELIXIR_MULTIPLIER = 1.5f;
-            this.sidebar.updateLineContent("elixir_multiplier", Component.text("Current Multiplier: " + ELIXIR_MULTIPLIER).color(NamedTextColor.AQUA));
+			this.sidebar.updateLineContent("elixir_multiplier",
+					Component.text("Current Multiplier: " + ELIXIR_MULTIPLIER).color(NamedTextColor.AQUA));
 		}
 
-        long timeRemaining = maxGameDuration.toMinutes() - timeElapsedInMinutes;
-        this.sidebar.updateLineContent("time_elapsed", Component.text("Time remaining: " + timeRemaining + " min").color(NamedTextColor.AQUA));
+		long timeRemaining = maxGameDuration.toMinutes() - timeElapsedInMinutes;
+		this.sidebar.updateLineContent("time_elapsed",
+				Component.text("Time remaining: " + timeRemaining + " min").color(NamedTextColor.AQUA));
 
 		this.players.forEach(player -> {
 			player.setFood(
@@ -159,12 +167,12 @@ public class Game {
 		this.state = GameState.ENDED;
 		this.endTime = Instant.now();
 
-        this.players.forEach(player -> {
-            player.sendNotification(
-                    new Notification(Component.text("Game ended!"), FrameType.CHALLENGE, Material.BARRIER));
-            this.sidebar.removeViewer(player);
-            player.setInstance(InstanceManager.getInstanceById("lobby"));
-        });
+		this.players.forEach(player -> {
+			player.sendNotification(
+					new Notification(Component.text("Game ended!"), FrameType.CHALLENGE, Material.BARRIER));
+			this.sidebar.removeViewer(player);
+			player.setInstance(InstanceManager.getInstanceById("lobby"));
+		});
 		// save game into db or something
 		// put players back into the normal instance (lobby)
 	}

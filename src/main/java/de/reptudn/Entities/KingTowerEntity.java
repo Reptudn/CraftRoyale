@@ -26,8 +26,8 @@ public class KingTowerEntity extends ATower {
     private float health;
     private float attackDamage;
 
-    public KingTowerEntity(Player owner, Pos pos, float health, float attackDamage, Instance instace){
-        super(health, attackDamage);
+    public KingTowerEntity(Player owner, Pos pos, float health, float attackDamage, Instance instace) {
+        super(health, attackDamage, EntityType.ALLAY);
         this.setTeam(owner.getTeam());
         this.setInstance(instace, pos);
         this.health = health;
